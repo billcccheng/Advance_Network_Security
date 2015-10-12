@@ -1,0 +1,216 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{syntonly}
+%\syntaxonly
+\usepackage{amsmath}
+
+%------------------------------------------------------------------------------
+%   page
+%------------------------------------------------------------------------------
+\usepackage{geometry}
+\geometry{margin=1in}
+
+%\pagestyle{empty}
+
+%------------------------------------------------------------------------------
+%   paragraph
+%------------------------------------------------------------------------------
+\usepackage{titlesec}
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{5ex plus 0.5ex minus 0.2ex}
+
+%\titleformat{\paragraph}
+%    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+%\titlespacing*{\paragraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
+%\titleformat{\paragraph}
+%    {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+%\titleformat{\subparagraph}
+%    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+%\titlespacing*{\subparagraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
+
+%------------------------------------------------------------------------------
+%   algorithm
+%------------------------------------------------------------------------------
+\usepackage{algorithm, algorithmicx}
+\usepackage[noend]{algpseudocode}
+
+%\newcommand*\Let[2]{\State #1 $\gets$ #2}
+%\algnewcommand\Return[1]{\State #1}
+%\algrenewcommand\algorithmicrequire{\textbf{Precondition:}}
+%\algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
+%\algrenewtext{EndFor}{}
+
+%------------------------------------------------------------------------------
+%   theorem
+%------------------------------------------------------------------------------
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
+%------------------------------------------------------------------------------
+%   graph
+%------------------------------------------------------------------------------
+\usepackage{tikz}
+
+
+%------------------------------------------------------------------------------
+%   list
+%------------------------------------------------------------------------------
+\usepackage{enumitem}
+
+
+%------------------------------------------------------------------------------
+%   paste code
+%------------------------------------------------------------------------------
+\usepackage{listings}
+%\lstset{showspaces=false}
+%\lstdefinestyle{showspaces=false}
+\usepackage{courier}
+%\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{basicstyle=\normalfont\ttfamily,breaklines=true,showspaces=false}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+
+%------------------------------------------------------------------------------
+%   url
+%------------------------------------------------------------------------------
+\usepackage{hyperref}
+
+%------------------------------------------------------------------------------
+%   pic
+%------------------------------------------------------------------------------
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+%\graphicspath{ {./image} }
+%\graphicspath{ {/Users/jjjj222/Documents/Dropbox/2015\_fall/database/project\_1/image} }
+%------------------------------------------------------------------------------
+%   title
+%------------------------------------------------------------------------------
+\usepackage{titling}
+\setlength{\droptitle}{-5em}
+\title{
+    Advanced Networking and Security\\
+    - Project Proposal
+    \vspace{-2ex}
+}
+\author{
+    \normalfont \normalsize 
+    Chia-Cheng (Jeremy) Tso, 
+    424008965
+    \vspace{-5ex}
+}
+\date{
+    \normalfont \normalsize 
+    \vspace{-9ex}
+}
+
+\begin{document}
+%------------------------------------------------------------------------------
+%   begin
+%------------------------------------------------------------------------------
+\maketitle
+%During this project, you need to submit a
+%project proposal,
+%a progress report,
+%and a final report.
+%
+%The Project Proposal should contain
+%an introduction,
+%problem statement,
+%proposed technique/solution,
+%a survey of related work(and comparison),
+%a project plan (tasks, timeline, workload distribution).
+
+\section{Introduction}
+With the proliferation of hand-holding devices,
+the ubiquitous accessibility has been a norm for today's applications.
+Basically every service today supports an on-demand access through all kinds of devices.
+To meet this requirement, service providers tend to adopt the approach of rolling
+out their initial products as
+web applications.
+\\\\
+Web applications have many advantages over the traditional download-and-install ones:
+First of all, it works on every platform as long as there's a web browser.
+This takes a lot of pains off software engineers, since once a job done, it works everywhere.
+No more customization for different platforms.  %TODO
+%No more seperated team members.
+Secondly, the application can be patched instantely.
+Every user has the same version of application any single time, and it relieves engineers from
+tiresome backward compatible requirements.
+%which people usually ignore.
+%No more asking for user to upgrade
+Thirdly,
+applications can be used immediately without tedious download-install process.
+This fast deployment, fast prototype, and light-weighted feature
+greatly facilitates the time-to-market speed, and can get more instant
+feedback from market, and alter its direction accordingly
+\\\\
+Due to these advantages, tons of languages and frameworks, from server side php
+to client side html, emerged for web developing. With the help of new language,
+new framework building an website or web application becomes very easy.
+Anybody can build a web application by just learning the basic of these languages.
+%On the other hand, frameworks help you fasten the production of your web
+%application by including third party libraries and various helpers that assist
+%you through the development process. With the help of frameworks and new languages,
+%no more tedious work to read through all the manual script to just understand one
+%of the languages to write a web application.
+\\\\
+However,
+%Despite the glorious future for web development,
+there are many pitfalls.
+While engineers are busy on bringing out all the functionalities,
+they may not have time to work on security. Which may lead to devastating
+consequences. Our proposal here is to provide some simple, clear but also
+useful guidelines to help engineer code with "good habits"
+
+Note that our goal here is not to cover every vulneribilities, which is intuitively impossible.
+Our goal here is to cover as many problems as possible with minimal efforts.
+
+You might think it's not good enough.
+However, the concept of security is that if the value of the data in your website
+least than the effort that one need to break in, then, in this case,
+the protection should be sufficient.
+%Due to its advantages, tons of framework/language emerge.
+%
+%with the help of new language, new framework
+%building an website/web application becomes very easy.
+%everybody can code
+%
+%And there are many more pitfall
+%While engineer are busying on bring out all the functionalities,
+%they may not have time to work on secuirty.
+%
+%Despite the glorious future for web development, there are still many pitfall. While engineers are busy on bringing out all the functionalities, they may not have time to work on security. Which may lead to devastating consequences. Our proposal here is to provide some simple, clear but also useful guidelines to help engineer code with "good habits"
+%
+%Note that our goal here is not to cover every vulnerabilities, which is intuitively impossible. Our goal here is to cover as many problems as possible with minimal efforts. One might think this is not good enough. However, the concept of security is that if the value of the data in your website is less than the effort that one needs to break in, or in other words, the attacker would need to put a time that is not worth to steal your data, then, in this case, the protection should be sufficient.
+%
+%According to the ``Pareto principle'' , or known as the 80-20 law, most of the easy vulnerabilities should be able to eliminated, if one avoids most of vulnerability by eliminating bad coding style. It is not likely to notice every single problem without the help of scanner or static analyzer, however, by just following the guidelines of the different frameworks and languages that we propose, we believe that security breaches in the web applications may be minimized.
+%problem statement,
+%proposed technique/solution,
+%a survey of related work(and comparison),
+%a project plan (tasks, timeline, workload distribution).
+\section{Problem Statement}
+There are so many pitfalls while working on an web application,
+and engineers often are too busy to care about securities.
+to resolve this issue.
+
+\section{Proposed Solution}
+Our propose here is to provide some simple, clear but useful guidelines
+to help engineer code with "good habits"
+
+20/80 law
+most of the easy vulneribilities should be able to eliminated.
+avoid most of vulnerability by void bad coding style.
+
+It's not likely to notice every single problem without the help of scanner or static analyzer,
+however,
+
+
+\section{Related Work}
+\section{Project Plan}
+\begin{thebibliography}{9}
+\bibitem{bala}
+balabala
+\end{thebibliography}
+%------------------------------------------------------------------------------
+%   end
+%------------------------------------------------------------------------------
+\end{document}
