@@ -127,8 +127,8 @@
 \section{Introduction}
 With the proliferation of hand-holding devices,
 the ubiquitous accessibility has been a norm for today's applications.
-Basically every service today supports the on-demand access through all kinds of devices,
-and users should be able to use whatever their like to receive the service.
+Basically every service today supports on-demand access through all kinds of devices,
+and users should be able to use whatever service they like to receive.
 %ranging from Macbook, iPad, to Windowns phone.
 %users should be able to use Android, iOS, Windows, or Linux as they wish.
 To meet this requirement, more and more service providers tend to roll
@@ -169,15 +169,17 @@ anybody can build a web application by simply following some basic tutorials.
 However, although these tools are easy to use,
 %Despite the glorious future for web development,
 %there are many pitfalls.
-they have many pitfalls as well.
-%TODO: example
+they have many pitfalls as well. For instance, in PHP 4.2.0 or lower, PHP had global variable that could be access 
+any where in the application. Since PHP does not require variables to be initialized when declared, if programmers
+do not take steps to protect this variable. It is likely that this variable may be compromised by malicious user by
+using various of techniques, such as script injections.
 %They treat
-Once a developer stepped on some of them, the newly-built web application could
+Once a developer steps on some of them, the newly-built web application could
 be another puppets controlled by malicious hackers.
 %TODO: example
 \\\\
 To prevent this from happening, we want to provide some simple, clear but
-useful guidelines to help programmer code with "good habits".
+useful guidelines to help programmer code with ``good habits".
 Normally, while engineers are busy on bringing out all the functionalities,
 they do not have enough time to work on security. By following our guidelines,
 they only have to pay a little extra attention, while getting a more secure application.
@@ -216,7 +218,7 @@ the protection should be sufficient.
 %a survey of related work(and comparison),
 \section{Problem Statement}
 Engineers have to face many pitfalls while working on an web application, such as
-various framework structures and different language behaivors.
+various framework structures and different language behaviors.
 %Different servers, different languages, and different frameworks.
 %such as buffer overflow, cross-site scripting, SQL injection,
 On developing,
@@ -240,13 +242,26 @@ eliminate most of vulnerabilities with minimal efforts.
 
 
 \section{Related Work}
-Different web application vulnerability have been proposed before. In this section we will include some of the most common vulnerabilities that have been proposed till now. First of all, one of the most famous and most ancient attack is the sql injection attack which was first documented by Jeff Forristal, more know by the name of rain forest puppy \cite{Jeff}.  SQL injection vulnerabilities have been described as one of the most serious threats for Web applications \cite{Aucsmith} \cite{TO}. In 2006, Professor Halfond classified the SQL injection attacks and proposed some countermeasure \cite{halfond06mar}.\\
+Different web application vulnerability have been proposed before. In this section we will include some of the most common 
+vulnerabilities that have been proposed till now. First of all, one of the most famous and most ancient attack is the sql injection 
+attack which was first documented by Jeff Forristal, more know by the name of rain forest puppy \cite{Jeff}. 
+ SQL injection vulnerabilities have been described as one of the most serious threats for Web applications \cite{Aucsmith} \cite{TO}. 
+ In 2006, Professor Halfond classified the SQL injection attacks and proposed some countermeasure \cite{halfond06mar}.\\
 
-Secondly, another famous web application attacks is the Cross Site Scripting(CSS). Cross-site scripting carried out on websites accounted for roughly 84\% of all security vulnerabilities documented by Symantec as of 2007\cite{symantec}. Cross-site scripting (XSS) attacks target an application's users by injecting code, usually a client-side script such as JavaScript, into a Web application's output. These attacks can cause small petty security ricks to devastating data theft depending on how sensitive are the data in the websites.\\
+Secondly, another famous web application attacks is the Cross Site Scripting(CSS). 
+Cross-site scripting carried out on websites accounted for roughly 84\% of all security vulnerabilities documented by Symantec as of 2007\cite{symantec}. 
+Cross-site scripting (XSS) attacks target an application's users by injecting code, usually a client-side script such as JavaScript, into a Web application's output. 
+These attacks can cause small petty security ricks to devastating data theft depending on how sensitive are the data in the websites.\\
 
-Third of all, the session management and user authentication. Web applications have to handle user authentication and establish sessions to keep track of each user's requests as HTTP does not provide this capability. If there is a breach in the session management of a web application, the attacker can then steal the user cookie and impersonate this person on the web. However, cookies are not accessible via non-HTTP methods, such as calls via JavaScript, by using document.cookie, and therefore cannot be stolen easily via cross-site scripting\cite{symantec}.\\
+Third of all, the session management and user authentication. Web applications have to handle user authentication and establish sessions to keep track 
+of each user's requests as HTTP does not provide this capability. If there is a breach in the session management of 
+a web application, the attacker can then steal the user cookie and impersonate this person on the web. 
+However, cookies are not accessible via non-HTTP methods, such as calls via JavaScript, by using document.cookie, and therefore cannot be stolen easily via cross-site scripting\cite{symantec}.\\
 
-Last of all, the insecure direct object reference. If the web application design does not have mistake-proofing mechanism and assumes that users will always follow the application rules, then it is likely that a user may accidentally jump into a page that it was not granted access. This is the benign security breach, since the user may not want to steal any information, but what if a malicious user starts stealing the information or to make things worse, a hacker that can read the URL or can guess the hidden field of the URL\cite{Michael}. If this happens, you web application can be in big trouble.
+Last of all, the insecure direct object reference. If the web application design does not have mistake-proofing mechanism and assumes that users will always follow the application rules, 
+then it is likely that a user may accidentally jump into a page that it was not granted access. This is the benign security breach, since the user may not want to steal any information, 
+but what if a malicious user starts stealing the information or to make things worse, a hacker that can read the URL or can guess the hidden field of the URL\cite{Michael}. 
+If this happens, you web application can be in big trouble.
 
 
 %a project plan (tasks, timeline, workload distribution).
