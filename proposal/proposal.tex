@@ -214,10 +214,14 @@ however,
 
 
 \section{Related Work}
-Different web application vulnerability have been proposed before. One of the most famous and most ancient attack is the sql injection attack which was first documented by Jeff Forristal, more know by the name of rain
-forest puppy \cite{Jeff}.  SQL injection vulnerabilities have been described as one of the most serious threats for Web applications \cite{Aucsmith} \cite{TO}. In 2006, Professor Halfond classfied the SQL injection attacks and proposed some contermeasure \cite{halfond06mar}.\\
+Different web application vulnerability have been proposed before. In this section we will include some of the most common vulnerabilities that have been proposed till now. First of all, one of the most famous and most ancient attack is the sql injection attack which was first documented by Jeff Forristal, more know by the name of rain forest puppy \cite{Jeff}.  SQL injection vulnerabilities have been described as one of the most serious threats for Web applications \cite{Aucsmith} \cite{TO}. In 2006, Professor Halfond classified the SQL injection attacks and proposed some contermeasure \cite{halfond06mar}.\\
 
-Another famous web application attacks is Cross Site Scripting(CSS). Cross-site scripting carried out on websites accounted for roughly 84\% of all security vulnerabilities documented by Symantec as of 2007\cite{symantec}. These attacks can cause small petty security ricks to devastating data theft depending on how sensitive are the data in the websites.
+Secondly, another famous web application attacks is the Cross Site Scripting(CSS). Cross-site scripting carried out on websites accounted for roughly 84\% of all security vulnerabilities documented by Symantec as of 2007\cite{symantec}. Cross-site scripting (XSS) attacks target an application's users by injecting code, usually a client-side script such as JavaScript, into a Web application's output. These attacks can cause small petty security ricks to devastating data theft depending on how sensitive are the data in the websites.\\
+
+Third of all, the session management and user authentication. Web applications have to handle user authentication and establish sessions to keep track of each user's requests as HTTP does not provide this capability. If there is a breach in the session management of a web application, the attacker can then steal the user cookie and impersonate this person on the web. However, cookies are not accessible via non-HTTP methods, such as calls via JavaScript, by using document.cookie, and therefore cannot be stolen easily via cross-site scripting\cite{symantec}.\\
+
+Last of all, the insecure direct object reference. If the web application design does not have mistake-proofing mechanism and assumes that users will always follow the application rules, then it is likely that a user may accidentally jump into a page that it was not granted access. This is the benign security breach, since the user may not want to steal any information, but what if a malicious user starts stealing the information or to make things worse, a hacker that can read the URL or can guess the hidden field of the URL\cite{Michael}. If this happens, you web application can be in big trouble.
+
 
 \section{Project Plan}
 
