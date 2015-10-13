@@ -172,12 +172,38 @@ However, although these tools are easy to use,
 they have many pitfalls as well. For instance, in PHP 4.2.0 or lower, PHP had global variable that could be access 
 any where in the application. Since PHP does not require variables to be initialized when declared, if programmers
 do not take steps to protect this variable. It is likely that this variable may be compromised by malicious user by
-using various of techniques, such as script injections.
+using various of techniques, such as script injections.\\
 %They treat
+
 Once a developer steps on some of them, the newly-built web application could
-be another puppets controlled by malicious hackers.
+be another puppets controlled by malicious hackers. Continuing the example stated above, if the malicious user
+decides to gain root access to the server folder of your website by using the compromised variable. See the example code below:
+\newpage
+\lstset{language=PHP,
+                basicstyle=\color{black}\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{red}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+\begin{lstlisting}
+if (authenticated_user()) {
+    $authorized = true;
+}
+
+Programs continues on....
+
+if ($authorized) {
+    Access_data_only_administrator_can_see();
+}
+
+\end{lstlisting}
 %TODO: example
-\\\\
+
+Since $\$authorize$ can be initialized even without $authenticated\_user()$ and it has not been initialized to false in the beginning. Attacker
+can take advantage of this, defining $\$authorized$ through various techniques, for example, defining the variable $\$authorized$ through $register\_globals$. 
+Boom! Your website is compromised, all the sensitive data are exposed to the attacker!\\
+
 To prevent this from happening, we want to provide some simple, clear but
 useful guidelines to help programmer code with ``good habits".
 Normally, while engineers are busy on bringing out all the functionalities,
