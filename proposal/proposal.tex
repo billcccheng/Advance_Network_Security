@@ -3,7 +3,7 @@
 \usepackage{syntonly}
 %\syntaxonly
 \usepackage{amsmath}
-
+\usepackage{url}
 %------------------------------------------------------------------------------
 %   page
 %------------------------------------------------------------------------------
@@ -94,7 +94,11 @@
 \author{
     \normalfont \normalsize 
     Chia-Cheng (Jeremy) Tso, 
-    424008965
+    424008965\\
+    \vspace{-5ex}
+    \normalfont \normalsize 
+    Chun-Chan (Bill) Cheng, 
+    924000036
     \vspace{-5ex}
 }
 \date{
@@ -202,7 +206,7 @@ Our propose here is to provide some simple, clear but useful guidelines
 to help engineer code with "good habits"
 
 20/80 law
-most of the easy vulneribilities should be able to eliminated.
+most of the easy vulnerabilities should be able to eliminated.
 avoid most of vulnerability by void bad coding style.
 
 It's not likely to notice every single problem without the help of scanner or static analyzer,
@@ -210,11 +214,15 @@ however,
 
 
 \section{Related Work}
+Different web application vulnerability have been proposed before. One of the most famous and most ancient attack is the sql injection attack which was first documented by Jeff Forristal, more know by the name of rain
+forest puppy \cite{Jeff}.  SQL injection vulnerabilities have been described as one of the most serious threats for Web applications \cite{Aucsmith} \cite{TO}. In 2006, Professor Halfond classfied the SQL injection attacks and proposed some contermeasure \cite{halfond06mar}.\\
+
+Another famous web application attacks is Cross Site Scripting(CSS). Cross-site scripting carried out on websites accounted for roughly 84\% of all security vulnerabilities documented by Symantec as of 2007\cite{symantec}. These attacks can cause small petty security ricks to devastating data theft depending on how sensitive are the data in the websites.
+
 \section{Project Plan}
-\begin{thebibliography}{9}
-\bibitem{bala}
-balabala
-\end{thebibliography}
+
+\bibliographystyle{unsrt}
+\bibliography{references}
 %------------------------------------------------------------------------------
 %   end
 %------------------------------------------------------------------------------
