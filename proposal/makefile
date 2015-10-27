@@ -10,7 +10,7 @@ $(PDFFILE): ${FILE} ${BBLFILE}
 
 ${BBLFILE}: ${BIBFILE}
 	pdflatex -interaction=nonstopmode $(FILE)
-	bibtex proposal.aux
+	bibtex $(AUXFILE)
 
 .PHONY: run
 run: $(PDFFILE)
