@@ -12,7 +12,8 @@
 %   list
 %------------------------------------------------------------------------------
 \usepackage{enumitem}
-
+\usepackage{fancyvrb}
+\usepackage{framed}
 %------------------------------------------------------------------------------
 %   algorithm
 %------------------------------------------------------------------------------
@@ -51,7 +52,7 @@
 %------------------------------------------------------------------------------
 \title{Are You Coding Safely? A Guideline for Web Developers}
 
-\author{\IEEEauthorblockN{Chun-Chan Cheng}
+\author{\IEEEauthorblockN{Chun-Chan (Bill) Cheng}
 \IEEEauthorblockA{Department of Computer Science and Engineering\\
 Texas A\&M University\\
 Email: aznchat@tamu.edu }
@@ -134,15 +135,8 @@ using various of techniques, such as script injections.
 Once a developer steps on some of them, the newly-built web application could
 be another puppets controlled by malicious hackers. Continuing the example stated above, if the malicious user
 decides to gain root access to the server folder of your website by using the compromised variable. See the example code below:
-%\newpage
-%\lstset{language=PHP,
-%                basicstyle=\color{black}\ttfamily,
-%                keywordstyle=\color{blue}\ttfamily,
-%                stringstyle=\color{red}\ttfamily,
-%                commentstyle=\color{red}\ttfamily,
-%                morecomment=[l][\color{magenta}]{\#}
-%}
-\begin{lstlisting}[language=PHP]
+\begin{framed}
+\begin{verbatim}
 if (authenticated_user()) {
     $authorized = true;
 }
@@ -150,10 +144,10 @@ if (authenticated_user()) {
 Program continues on....
 
 if ($authorized) {
-    Access_data_only_administrator_can_see();
+    Sensitive_Data();
 }
-
-\end{lstlisting}
+\end{verbatim}
+\end{framed}
 %TODO: example
 
 Since $\$authorize$ can be initialized even without $authenticated\_user()$ and it has not been initialized to false in the beginning. Attacker
@@ -245,16 +239,10 @@ then it is likely that a user may accidentally jump into a page that it was not 
 but what if a malicious user starts stealing the information or to make things worse, a hacker that can read the URL or can guess the hidden field of the URL\cite{Michael}. 
 If this happens, you web application can be in big trouble.  \cite{Test}.
 
-
-%a project plan (tasks, timeline, workload distribution).
-\section{Project Plan}
-\begin{itemize}
-    \item Week 7, 8: general survey, aim at identifying common vulnerabilities in popular
-        frameworks and languages
-    \item Week 9, 10: looking for good methods to avoid these common problems
-    \item Week 11, 12: build proof-of-concept cases
-    \item Week 13, 14: refine report and cases
-\end{itemize}
+\section{PHP.ini}
+\subsection{Expose\_php}
+\subsubsection{Vulnerability}
+\subsubsection{Recommendation}
 
 
 \bibliographystyle{unsrt}
