@@ -240,10 +240,25 @@ but what if a malicious user starts stealing the information or to make things w
 If this happens, you web application can be in big trouble.  \cite{Test}.
 
 \section{PHP.ini}
-\subsection{Expose\_php}
+PHP.ini file is an important configuration file for PHP. You declare all the configuration settings in this file. Since the php.ini file is read each time PHP is initialized, it is important that
+PHP developer know the basic security configuration of the PHP.ini file. Below we will give some basic guidelines for developers on what to set to the environment variable in the PHP.ini
+to prevent petty attacks. Even though this configuration won't by itself fend off a determined attacker, but it will lower visibility to attacks that rely on simple techniques to scan for vulnerable targets\cite{phpini}.
+ 
+\subsection{expose\_php}
+\texttt{Expose\_php}, when turned on will tell the web server to send back the \texttt{X-Powered-By} header, in other words, \texttt{Expose\_php} will return back in every request what version of PHP is installed.
 \subsubsection{Vulnerability}
+If a web application is using a PHP version that is out of date or using a PHP version with known vulnerabilities, malicious attackers can exploit this vulnerability causing the web application to be 
+unsecure\cite{exposephp}.
 \subsubsection{Recommendation}
-
+Setting the \texttt{Expose\_php} to \texttt{off} is recommended. Even though determined attackers can still get the version of your php but it would take them more time trying to achieve this. In addition,
+ the web application can stand up to simple attack scanning for specific version of php vulnerabilities. In conclusion, it is always better to set \texttt{Expose\_php} to \texttt{off} than never.
+ 
+\subsection{post\_max\_size}
+The environment variable \texttt{post\_max\_size} is the variable that sets the size that \texttt{\$\_POST} method can send over to the server.
+\subsubsection{Vulnerability}
+If this environment variable is not set to a realistic value, for example, if you set the value to 1024 MB, then you are giving attackers permission to put your server at stress by sending oversized POST request.\cite{postmaxsize}
+\subsubsection{Recommendation}
+By setting a realistic value here you can mitigate some of the damage by those attacks. This protection allows you to limit the maximum size POST request that PHP will process.
 
 \bibliographystyle{unsrt}
 \bibliography{references}
