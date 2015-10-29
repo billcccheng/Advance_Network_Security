@@ -1,0 +1,168 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{syntonly}
+%\syntaxonly
+\usepackage{amsmath}
+\usepackage{url}
+%------------------------------------------------------------------------------
+%   page
+%------------------------------------------------------------------------------
+\usepackage{geometry}
+\geometry{margin=1in}
+
+%\pagestyle{empty}
+
+%------------------------------------------------------------------------------
+%   paragraph
+%------------------------------------------------------------------------------
+\usepackage{titlesec}
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{5ex plus 0.5ex minus 0.2ex}
+
+%\titleformat{\paragraph}
+%    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+%\titlespacing*{\paragraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
+%\titleformat{\paragraph}
+%    {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+%\titleformat{\subparagraph}
+%    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+%\titlespacing*{\subparagraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
+
+%------------------------------------------------------------------------------
+%   algorithm
+%------------------------------------------------------------------------------
+\usepackage{algorithm, algorithmicx}
+\usepackage[noend]{algpseudocode}
+
+%\newcommand*\Let[2]{\State #1 $\gets$ #2}
+%\algnewcommand\Return[1]{\State #1}
+%\algrenewcommand\algorithmicrequire{\textbf{Precondition:}}
+%\algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
+%\algrenewtext{EndFor}{}
+
+%------------------------------------------------------------------------------
+%   theorem
+%------------------------------------------------------------------------------
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
+%------------------------------------------------------------------------------
+%   graph
+%------------------------------------------------------------------------------
+\usepackage{tikz}
+
+
+%------------------------------------------------------------------------------
+%   list
+%------------------------------------------------------------------------------
+\usepackage{enumitem}
+
+
+%------------------------------------------------------------------------------
+%   paste code
+%------------------------------------------------------------------------------
+\usepackage{listings}
+%\lstset{showspaces=false}
+%\lstdefinestyle{showspaces=false}
+\usepackage{courier}
+%\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{basicstyle=\normalfont\ttfamily,breaklines=true,showspaces=false}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+
+%------------------------------------------------------------------------------
+%   url
+%------------------------------------------------------------------------------
+\usepackage{hyperref}
+
+%------------------------------------------------------------------------------
+%   pic
+%------------------------------------------------------------------------------
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+%\graphicspath{ {./image} }
+%\graphicspath{ {/Users/jjjj222/Documents/Dropbox/2015\_fall/database/project\_1/image} }
+%------------------------------------------------------------------------------
+%   title
+%------------------------------------------------------------------------------
+\usepackage{titling}
+\setlength{\droptitle}{-5em}
+\title{
+    Advanced Networking and Security\\
+    - Project Progress Report 
+    \vspace{-2ex}
+}
+\author{
+    \normalfont \normalsize 
+    Chia-Cheng (Jeremy) Tso, 
+    424008965\\
+    %\vspace{-5ex}
+    \normalfont \normalsize 
+    Chun-Chan (Bill) Cheng, 
+    924000036
+    %\vspace{-5ex}
+}
+\date{
+    \normalfont \normalsize 
+    %\vspace{-9ex}
+    \vspace{-5ex}
+}
+
+\begin{document}
+%------------------------------------------------------------------------------
+%   begin
+%------------------------------------------------------------------------------
+\maketitle
+\section{blah blah}
+We summarize the most important practices.
+
+\section{Configuration}
+Why? it's the basic
+
+\subsection{admin setup}
+DO's and DON'Ts
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item
+\end{enumerate}
+
+\subsection{chmod}
+
+\subsection{web server setup}
+.htaccess?
+(some specifiy appache config?)
+
+\section{String IO}
+most problems are here
+
+\subsection{Input}
+\subsubsection{White List}
+1. manual
+2. tool
+\subsubsection{Escape}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item php
+    \item python
+\end{enumerate}
+
+\subsection{Output}
+
+\section{Database Access}
+\subsubsection{setup}
+account, password
+
+\subsubsection{R/W}
+use proposed
+
+\section{Crypto Function}
+\subsection{SSL}
+\subsection{SHA, AES, RSA, ECC?}
+
+\section{Tools}
+\subsection{packer}
+\subsection{fuzzing?}
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+%------------------------------------------------------------------------------
+%   end
+%------------------------------------------------------------------------------
+\end{document}
