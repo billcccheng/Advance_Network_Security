@@ -112,53 +112,110 @@
 %   begin
 %------------------------------------------------------------------------------
 \maketitle
-\section{blah blah}
-We summarize the most important practices.
+\section{Introduction}
+After suvery and discussion, we concluded the following simple yet important
+steps which can thwart most of the basic attacks.
 
 \section{Configuration}
 Why? it's the basic
+First and formost, the most important one is the setup of environment.
+\subsection{system setup}
+1. don't use easy account name and password
+2. never chmod 777
+3. close unnecessary ports/service
+command: netstat, nmap IP
+4. setup whitelist
+file: /etc/hosts.allow
+content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
+5. setup log and backup
 
-\subsection{admin setup}
-DO's and DON'Ts
-\begin{enumerate}[label=\textbf{\arabic*.}]
-    \item
-\end{enumerate}
-
-\subsection{chmod}
+%\subsection{admin setup}
+%DO's and DON'Ts
+%\begin{enumerate}[label=\textbf{\arabic*.}]
+%    \item
+%\end{enumerate}
+%
+%\subsection{chmod}
 
 \subsection{web server setup}
-.htaccess?
-(some specifiy appache config?)
+apache:
+1. Protecting System Settings
+2. Protect Server Files by Default
+3. setup log
+%http://www.petefreitag.com/item/505.cfm
+%http://www.tecmint.com/apache-security-tips/
+\subsection{language setup}
+php?
+django?
+rail?
 
 \section{String IO}
-most problems are here
+%most problems are here
+TODO: cite
+37\% Cross-site scripting
+16\% SQL injection
+it's crucial
+blah blah
 
 \subsection{Input}
+never trust user
+
 \subsubsection{White List}
+good for account password
+con: limited
 1. manual
 2. tool
+
 \subsubsection{Escape}
-\begin{enumerate}[label=\textbf{\arabic*.}]
-    \item php
-    \item python
-\end{enumerate}
+pro: more general,
+con: hard to do it right
+escape function:
+1. php
+2. python
+%    \item python escape function
+%\begin{enumerate}[label=\textbf{\arabic*.}]
+%    \item php escape function
+%    \item python escape function
+%\end{enumerate}
 
 \subsection{Output}
+reason: avoid XSS
+method: escape?
 
 \section{Database Access}
-\subsubsection{setup}
-account, password
+it's the target of attacker
+\subsection{setup}
+account, password, access
 
-\subsubsection{R/W}
-use proposed
+\subsection{R/W}
+use proposed: avoid sql injection
+
+\subsection{data}
+1. hash passward
+2. add salt while hashing, rainbow table
 
 \section{Crypto Function}
 \subsection{SSL}
+library and their setup?
+
 \subsection{SHA, AES, RSA, ECC?}
+good function for
+1. hash
+2. encrpytion
+3. randeon number geneerator
 
 \section{Tools}
+use tool to help us
 \subsection{packer}
-\subsection{fuzzing?}
+1. harden code
+2. enhance runtime
+\subsection{fuzzing/penetration test?}
+1. test
+
+\section{TDOO}
+1. build case to test
+2. detail usage
+3. test whether the guildlines are truly useful
 
 \bibliographystyle{unsrt}
 \bibliography{references}
