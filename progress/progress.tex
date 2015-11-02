@@ -113,20 +113,41 @@
 %------------------------------------------------------------------------------
 \maketitle
 \section{Introduction}
-After suvery and discussion, we concluded the following simple yet important
-steps which can thwart most of the basic attacks.
+%After suvery and discussion,
+Web application is powerful, but it also requires
+extra efforts to get it right.% in terms of security.
+To reduce the burden of developors,
+we proposed the following basic yet important
+steps which would be able to thwart most of low-cost attacks:
+%Vcorrect configuration of system and server,
 
+%------------------------------------------------------------------------------
+%   
+%------------------------------------------------------------------------------
 \section{Configuration}
-Why? it's the basic
-First and formost, the most important one is the setup of environment.
-\subsection{system setup}
-1. don't use easy account name and password
+it's tedious, but it's crucial.
+3 parts: system (linux), web server (apache), language
+because it's the most common setup.
+%Why? it's the basic
+%First and formost, the most important one is the setup of environment.
+
+\subsection{general} % may remove?
+1. use good account name and password
+for both server and application admin
+
+\subsection{system setup} % TODO: better term?
 2. never chmod 777
+avoid information leak
+
 3. close unnecessary ports/service
-command: netstat, nmap IP
-4. setup whitelist
+check command: netstat, nmap IP
+close command: TODO
+
+4. setup ip whitelist
+force to connect by vpn
 file: /etc/hosts.allow
 content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
+
 5. setup log and backup
 
 %\subsection{admin setup}
@@ -138,23 +159,35 @@ content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
 %\subsection{chmod}
 
 \subsection{web server setup}
+TODO: location of setup file
+
 apache:
 1. Protecting System Settings
 2. Protect Server Files by Default
 3. setup log
 %http://www.petefreitag.com/item/505.cfm
+Hide the Apache Version number, and other sensitive information. %TODO: paraphrase
+Make sure apache is running under its own user account and group %TODO: paraphrase
+Ensure that files outside the web root are not served
+Turn off CGI execution
+Make sure only root has read access to apache's config and binaries
 %http://www.tecmint.com/apache-security-tips/
-\subsection{language setup}
-php?
-django?
-rail?
+Disable Directory Listing
+Disable Apache’s following of Symbolic Links
 
-\section{String IO}
+\subsection{language setup}
+php.ini?
+django?
+
+%------------------------------------------------------------------------------
+%   
+%------------------------------------------------------------------------------
+\section{String I/O}
 %most problems are here
 TODO: cite
 37\% Cross-site scripting
 16\% SQL injection
-it's crucial
+it's error-prone
 blah blah
 
 \subsection{Input}
@@ -181,20 +214,68 @@ escape function:
 \subsection{Output}
 reason: avoid XSS
 method: escape?
+how to escape html?
 
+
+%------------------------------------------------------------------------------
+%   
+%------------------------------------------------------------------------------
 \section{Database Access}
-it's the target of attacker
+Today,
+all the Information are stored in database,
+account/password
+Personally identifiable information (PII),
+etc.
+
+therefore,
+Datacases are the target of attacker.
+SQL injection is the most common one.
+
+focos on MySQL here because LAMP is very popular
+
 \subsection{setup}
 account, password, access
 
 \subsection{R/W}
 use proposed: avoid sql injection
 
+python example:
+%cite: https://www.python.org/dev/peps/pep-0249/ Python Database API
+%.execute ( operation [, parameters ])
+%Prepare and execute a database operation (query or command).
+%cur example: http://initd.org/psycopg/docs/usage.html#query-parameters
+Don't:
+\begin{lstlisting}[language=python]
+cursor.execute("SELECT * FROM table WHERE id=%s" % (id));
+\end{lstlisting}
+Do:
+\begin{lstlisting}[language=python]
+cursor.execute("SELECT * FROM table WHERE id=%s" , id);
+\end{lstlisting}
+The first one is normal format string construction in python.
+placeholder \%s will be replaced by id.
+and the whole query string will be executed.
+injection problem
+
+The second one use paramters.
+\begin{lstlisting}[language=python]
+Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
+\end{lstlisting}
+
+
 \subsection{data}
 1. hash passward
 2. add salt while hashing, rainbow table
 
+
+%------------------------------------------------------------------------------
+%   
+%------------------------------------------------------------------------------
 \section{Crypto Function}
+important
+lack of knowledge
+looks fine but indeed not
+
 \subsection{SSL}
 library and their setup?
 
@@ -204,6 +285,9 @@ good function for
 2. encrpytion
 3. randeon number geneerator
 
+%------------------------------------------------------------------------------
+%   
+%------------------------------------------------------------------------------
 \section{Tools}
 use tool to help us
 \subsection{packer}
