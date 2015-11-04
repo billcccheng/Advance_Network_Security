@@ -235,6 +235,8 @@ focos on MySQL here because LAMP is very popular
 
 \subsection{setup}
 account, password, access
+information.schema?
+access permission?
 
 \subsection{R/W}
 use proposed: avoid sql injection
@@ -264,6 +266,11 @@ Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 
 
 \subsection{data}
+django
+%https://docs.djangoproject.com/en/1.8/topics/auth/passwords/
+%http://stackoverflow.com/questions/749682/django-passwords Django Code
+
+%https://en.wikipedia.org/wiki/Rainbow_table Rainbow table
 1. hash passward
 2. add salt while hashing, rainbow table
 
@@ -280,6 +287,13 @@ looks fine but indeed not
 library and their setup?
 
 \subsection{SHA, AES, RSA, ECC?}
+%cite: https://docs.python.org/2/library/hashlib.html#module-hashlib Python hashlib
+
+%cite: https://en.wikipedia.org/wiki/Cryptographic_hash_function#Cryptographic_hash_algorithms
+Don't use MD5, SHA-1
+Use SHA-2
+%cite: https://en.wikipedia.org/wiki/SHA-2
+
 good function for
 1. hash
 2. encrpytion
