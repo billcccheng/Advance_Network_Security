@@ -118,7 +118,7 @@ Web application is powerful, but it also requires
 extra efforts to get it right.% in terms of security.
 To reduce the burden of developors,
 we proposed the following basic yet important
-steps which would be able to thwart most of low-cost attacks:
+steps which would thwart most of low-cost attacks efficiently:
 %Vcorrect configuration of system and server,
 
 %------------------------------------------------------------------------------
@@ -221,25 +221,27 @@ how to escape html?
 %   
 %------------------------------------------------------------------------------
 \section{Database Access}
-Today,
-all the Information are stored in database,
-account/password
-Personally identifiable information (PII),
-etc.
-
-therefore,
-Datacases are the target of attacker.
-SQL injection is the most common one.
-
-focos on MySQL here because LAMP is very popular
-
-\subsection{setup}
-account, password, access
-
-\subsection{R/W}
-use proposed: avoid sql injection
-
-python example:
+Almost all the information are stored in database today,
+including users' account/password, their data, and their
+personally identifiable information (PII).
+Therefore,
+datacases are often the main target of attackers.
+Among all the atacks, SQL injection is the most common one.
+We focus on MySQL here because it's the LAMP \cite{LAMP} boudle is widely used.
+\\\\
+%\subsection{setup}
+%account, password, access
+%information.schema?
+%access permission?
+Setting up database correctly, as other part of the system, is a necessity.
+We will discuss that later.
+Another key point is to use the specialized functions provided by databases
+instead of general ones. For example, using proposed function can effectively
+avoid some SQL injection. Below is an exmple in Python:
+\\\\
+%\subsection{R/W}
+%use proposed: avoid sql injection
+%python example:
 %cite: https://www.python.org/dev/peps/pep-0249/ Python Database API
 %.execute ( operation [, parameters ])
 %Prepare and execute a database operation (query or command).
@@ -253,53 +255,136 @@ Do:
 cursor.execute("SELECT * FROM table WHERE id=%s" , id);
 \end{lstlisting}
 The first one is normal format string construction in python.
-placeholder \%s will be replaced by id.
-and the whole query string will be executed.
-injection problem
-
-The second one use paramters.
+placeholder \%s will be replaced by id,
+and the whole query will be executed.
+Apparently, there is an injection problem.
+%injection problem
+On the other hand,
+the second one use proposed function with paramters.
+It pre-computes the query and apply the whole \%s directly for comparison.
+%pre-compute
+If somebody tries to perform an SQL injection, the system will block it automatically.
 \begin{lstlisting}[language=python]
 Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 \end{lstlisting}
 
 
-\subsection{data}
-1. hash passward
-2. add salt while hashing, rainbow table
+%\subsection{data}
+%django
+%https://docs.djangoproject.com/en/1.8/topics/auth/passwords/
+%http://stackoverflow.com/questions/749682/django-passwords Django Code
+
+%https://en.wikipedia.org/wiki/Rainbow_table Rainbow table
+%1. hash passward
+%2. add salt while hashing, rainbow table
+
+
+%------------------------------------------------------------------------------
+%   crypto
+%------------------------------------------------------------------------------
+\section{Cryptographic Utilities}
+%Needless to say, the
+%network
+Everybody knows that it's important to encrypt data while sending them over the internet,
+yet not everybody does it right.
+As the technologies of cryptography evolving,
+they become more and more complicated.
+%It's not the simple one-key-one-algorithm anymore.
+Normally, in an encrpyted communication, there are more the 1 keys involved,
+along with parameters, nonces, and different kinds of operation modes;
+some of them should be kept secret, while others are not;
+some of them can be reuse, while others must change every time.
+%some are public, some should be kept secret,
+%set up, %nonce, %some
+It's overwhelming for most of developors, and even an expertise might sometimes get it wrong.
+\\\\
+%key, function, implementatino, nonce.
+One of the exmples is the famous Sony PlayStation 3 issue \cite{PS3_Jailbreak}:
+Sony used ECDSA \cite{ECDSA} but didn't change the ephemeral key, so the
+private was calculated easily.
+%cite https://en.wikipedia.org/wiki/PlayStation_Jailbreak
+%cite https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
+Other well-known example is the
+side channel attack such as differential power analysis \cite{differential}:
+%cite https://en.wikipedia.org/wiki/Side-channel_attack
+The implementation is correctly, but functional correctness is not sufficient to
+be crpytographically secure.
+%For the
+%lack of knowledge
+%looks fine but indeed not
+\\\\
+%cite http://www.nist.gov/ NIST
+%cite https://www.owasp.org/index.php/Guide_to_Cryptography OWASP guide
+%cite http://csrc.nist.gov/groups/ST/toolkit/documents/dss/NISTReCur.pdf NIST ecc recommendation
+To support developors, we concluded the following guildlines:
+%Three most important concepts
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item
+Always encrypt the communication. You never know what information would help hackers
+break into your syatem, even if they appear to be harmless.
+    \item
+Use well-known standard, don't invent the encrpytion algorithm.
+%TODO: NIST \cite{NIST}
+%TODO: NXP mifare \cite{mifare_break}
+    \item
+%use the good one
+Use the up-to-date standard.
+Some algorithms such as md5 have been proved to be unsafe \cite{md5_break}.
+    \item
+Use libraries, don't implement algorithm yourself.
+(even  RNG)
+    \item
+Use it right,
+follow guides carefully for setup (such as those published by NIST \cite{NIST}).
+\end{enumerate}
+
+We will provide a more completet list of recommended functions,
+for hash, symmetric and assymetric encropyion,
+in many common web-debelop languages
+in the final report.
+
+%\subsection{SHA, AES, RSA, ECC?}
+%provide some python function
+%%cite: https://docs.python.org/2/library/hashlib.html#module-hashlib Python hashlib
+%
+%%cite: https://en.wikipedia.org/wiki/Cryptographic_hash_function#Cryptographic_hash_algorithms
+%Don't use MD5, SHA-1
+%Use SHA-2
+%%cite: https://en.wikipedia.org/wiki/SHA-2
+%
+%good function for
+%1. hash
+%2. encrpytion
+%3. randeon number geneerator
+%%https://pypi.python.org/pypi/pycrypto
+%python crypto function
+%
+%key strength match
+%because the weakest part
+%
+%\subsection{SSL}
+%library and their setup?
 
 
 %------------------------------------------------------------------------------
 %   
 %------------------------------------------------------------------------------
-\section{Crypto Function}
-important
-lack of knowledge
-looks fine but indeed not
+\section{Useful Tools}
+Many tools such as packer or fuzzer can help developers
+further improve the quality of web application.
+We will introduce some tools after doing some experiments on them.
+%use tool to help us
 
-\subsection{SSL}
-library and their setup?
+%\subsection{packer}
+%1. harden code
+%2. enhance runtime
+%\subsection{fuzzing/penetration test?}
+%1. test
 
-\subsection{SHA, AES, RSA, ECC?}
-good function for
-1. hash
-2. encrpytion
-3. randeon number geneerator
-
-%------------------------------------------------------------------------------
-%   
-%------------------------------------------------------------------------------
-\section{Tools}
-use tool to help us
-\subsection{packer}
-1. harden code
-2. enhance runtime
-\subsection{fuzzing/penetration test?}
-1. test
-
-\section{TDOO}
-1. build case to test
-2. detail usage
-3. test whether the guildlines are truly useful
+%\section{TDOO}
+%1. build case to test
+%2. detail usage
+%3. test whether the guildlines are truly useful
 
 \bibliographystyle{unsrt}
 \bibliography{references}
