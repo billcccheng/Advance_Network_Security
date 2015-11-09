@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[10pt, a4paper]{article}
 
 \usepackage{syntonly}
 %\syntaxonly
@@ -8,7 +8,7 @@
 %   page
 %------------------------------------------------------------------------------
 \usepackage{geometry}
-\geometry{margin=1in}
+\geometry{margin=2cm}
 
 %\pagestyle{empty}
 
@@ -62,7 +62,7 @@
 %   paste code
 %------------------------------------------------------------------------------
 \usepackage{listings}
-%\lstset{showspaces=false}
+\lstset{showstringspaces=false}
 %\lstdefinestyle{showspaces=false}
 \usepackage{courier}
 %\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
@@ -113,14 +113,9 @@
 %------------------------------------------------------------------------------
 \maketitle
 \section{Introduction}
-%After suvery and discussion,
-Web application is powerful, but it also requires
-extra efforts to get it right.% in terms of security.
-To reduce the burden of developors,
-we proposed the following basic yet important
-steps which would thwart most of low-cost attacks efficiently:
-%Vcorrect configuration of system and server,
-
+In the final report we will mainly focus on the things stated below
+because it's the most common setup and habits that prevents security issues. 
+In the final report we will do case testing for the things we have proposed.
 %------------------------------------------------------------------------------
 %   
 %------------------------------------------------------------------------------
@@ -129,8 +124,17 @@ In the report we will mainly focus on the things stated below
 because it's the most common setup. In the final report we will do case testing for the things we have proposed.
 Configuring the environment is tedious but it is crucial. In web application, there are mainly three parts to configure
 which are the system (linux), the server (apache), and the language that you are writing your web application on.
-3 parts: system (linux), web server (apache), language.
-\\
+For now, we have gathered data on how to configured all the system, server, and PHP language (this is the language we will
+focus on since it is the most popular server side language now). In the final report we will include the test cases on possible breaches when
+configuration are not set.
+\\\\
+The linux system and apache server will be a important part when it comes to web application, since it's the first place to hit when an attacker
+attacks. We have surveyed a lot of sources and decided which approach would be best to take to mitigate the attacks. Further information will
+be discussed in the final report.
+\\\\
+PHP is the most popular server side language, more than $80\%$ of the servers is written in PHP\cite{PHPusuage}. We are mainly going to focus
+on the php.ini document configuration and the different major frameworks that supports PHP. In these frameworks, different security are implemented
+to prevent malicious attacks or user accidentally triggered attacks. We will look deeply into these implementation and analyze there pros and cons.
 %Why? it's the basic
 %First and formost, the most important one is the setup of environment.
 
@@ -139,9 +143,9 @@ which are the system (linux), the server (apache), and the language that you are
 %for both server and application admin
 
 %\subsection{System Setup} % TODO: better term?
-In your web server never chmod 777 a file, which gives the read, write, and execute permission to every person. Also 
-always close unnecessary ports and service check commands, for example, netstat, nmap IP etc. Always setup a log
-and a backup server in case of an attack.\\
+%In your web server never chmod 777 a file, which gives the read, write, and execute permission to every person. Also 
+%always close unnecessary ports and service check commands, for example, netstat, nmap IP etc. Always setup a log
+%and a backup server in case of an attack.\\
 
 
 %3. close unnecessary ports/service
@@ -171,8 +175,8 @@ and a backup server in case of an attack.\\
 %2. Protect Server Files by Default
 %3. setup log
 %http://www.petefreitag.com/item/505.cfm
-As for the apache server, always hide the Apache Version number, and other sensitive information. %TODO: paraphrase
-Make sure apache is running under its own user account and group and only root has read access to apache's config and binaries %TODO: paraphrase
+%As for the apache server, always hide the Apache Version number, and other sensitive information. %TODO: paraphrase
+%Make sure apache is running under its own user account and group and only root has read access to apache's config and binaries %TODO: paraphrase
 %and ensure that files outside the web roots are not served.
 %Turn off CGI execution
 %Make sure only root has read access to apache's config and binaries
@@ -180,46 +184,61 @@ Make sure apache is running under its own user account and group and only root h
 %Disable Directory Listing
 %Disable Apache’s following of Symbolic Links
 
-\subsection{Language setup}
-We will focus mainly on PHP, which covers more than $80\%$ \cite{PHPusuage} of the server side languages. We have done the initial
-survey of the PHP, which includes the php.ini setup and
+%\subsection{Language setup}
+
 
 %------------------------------------------------------------------------------
 %   
 %------------------------------------------------------------------------------
 \section{String I/O}
+String I/O are a crucial part in a web application security issues. A lot of famous attacks, like SQL injection,
+cross site scripting, file inclusion and escaping etc. We are going discuss and give good examples on how
+to cope with these issues. Since even good user may some times type in strings that are dangerous to the system.
+String inputs are error prone, so this is an essential part to discuss with detail.
+\\\\
+In this section we will divide into a few subsections: 
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item
+	Input Validation: How to avoid javascript attacks or SQL injection by validating the input to see if it contains malicious code. This should be done both on the server side and client side.
+    \item
+    	White List: Words that are allowed to be input. For example if a web application asks for the password, some special character, for example $<$, must be omitted.
+     \item
+        Escape Characters: These characters $(\&, <, >, '', ' etc.)$ should be translated to other context , preventing switching into any execution context, such as script, style, or event handlers
+     \item
+     	Output:  We need to make sure that the data is properly validated or escaped. Validating the output is also to prevent attacks, such as Cross-site Scripting (XSS) and SQL Injection.
+\end{enumerate}
 %most problems are here
-TODO: cite
-37\% Cross-site scripting
-16\% SQL injection
-it's error-prone
-blah blah
+%TODO: cite
+%37\% Cross-site scripting
+%16\% SQL injection
+%it's error-prone
+%blah blah
 
-\subsection{Input}
-never trust user
+%\subsection{Input}
+%never trust user
 
-\subsubsection{White List}
-good for account password
-con: limited
-1. manual
-2. tool
+%\subsubsection{White List}
+%good for account password
+%con: limited
+%1. manual
+%2. tool
 
-\subsubsection{Escape}
-pro: more general,
-con: hard to do it right
-escape function:
-1. php
-2. python
+%\subsubsection{Escape}
+%pro: more general,
+%con: hard to do it right
+%escape function:
+%1. php
+%2. python
 %    \item python escape function
 %\begin{enumerate}[label=\textbf{\arabic*.}]
 %    \item php escape function
 %    \item python escape function
 %\end{enumerate}
 
-\subsection{Output}
-reason: avoid XSS
-method: escape?
-how to escape html?
+%\subsection{Output}
+%reason: avoid XSS
+%method: escape?
+%how to escape html?
 
 
 %------------------------------------------------------------------------------
@@ -230,8 +249,8 @@ Almost all the information are stored in database today,
 including users' account/password, their data, and their
 personally identifiable information (PII).
 Therefore,
-datacases are often the main target of attackers.
-Among all the atacks, SQL injection is the most common one.
+databases are often the main target of attackers.
+Among all the attacks, SQL injection is the most common one.
 We focus on MySQL here because it's the LAMP \cite{LAMP} boudle is widely used.
 \\\\
 %\subsection{setup}
@@ -242,7 +261,7 @@ Setting up database correctly, as other part of the system, is a necessity.
 We will discuss that later.
 Another key point is to use the specialized functions provided by databases
 instead of general ones. For example, using proposed function can effectively
-avoid some SQL injection. Below is an exmple in Python:
+avoid some SQL injection. Below is an example in Python:
 \\\\
 %\subsection{R/W}
 %use proposed: avoid sql injection
