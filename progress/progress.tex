@@ -125,30 +125,35 @@ steps which would thwart most of low-cost attacks efficiently:
 %   
 %------------------------------------------------------------------------------
 \section{Configuration}
-it's tedious, but it's crucial.
-3 parts: system (linux), web server (apache), language
-because it's the most common setup.
+In the report we will mainly focus on the things stated below
+because it's the most common setup. In the final report we will do case testing for the things we have proposed.
+Configuring the environment is tedious but it is crucial. In web application, there are mainly three parts to configure
+which are the system (linux), the server (apache), and the language that you are writing your web application on.
+3 parts: system (linux), web server (apache), language.
+\\
 %Why? it's the basic
 %First and formost, the most important one is the setup of environment.
 
-\subsection{general} % may remove?
-1. use good account name and password
-for both server and application admin
+%\subsection{general} % may remove?
+%1. use good account name and password
+%for both server and application admin
 
-\subsection{system setup} % TODO: better term?
-2. never chmod 777
-avoid information leak
+%\subsection{System Setup} % TODO: better term?
+In your web server never chmod 777 a file, which gives the read, write, and execute permission to every person. Also 
+always close unnecessary ports and service check commands, for example, netstat, nmap IP etc. Always setup a log
+and a backup server in case of an attack.\\
 
-3. close unnecessary ports/service
-check command: netstat, nmap IP
-close command: TODO
 
-4. setup ip whitelist
-force to connect by vpn
-file: /etc/hosts.allow
-content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
+%3. close unnecessary ports/service
+%check command: netstat, nmap IP
+%close command: TODO
 
-5. setup log and backup
+%4. setup ip whitelist
+%force to connect by vpn
+%file: /etc/hosts.allow
+%content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
+
+%5. setup log and backup
 
 %\subsection{admin setup}
 %DO's and DON'Ts
@@ -158,26 +163,26 @@ content: in.telnetd: 192.168.1.0/255.255.255.0, : Allow
 %
 %\subsection{chmod}
 
-\subsection{web server setup}
-TODO: location of setup file
+%\subsection{web server setup}
+%TODO: location of setup file
 
-apache:
-1. Protecting System Settings
-2. Protect Server Files by Default
-3. setup log
+%apache:
+%1. Protecting System Settings
+%2. Protect Server Files by Default
+%3. setup log
 %http://www.petefreitag.com/item/505.cfm
-Hide the Apache Version number, and other sensitive information. %TODO: paraphrase
-Make sure apache is running under its own user account and group %TODO: paraphrase
-Ensure that files outside the web root are not served
-Turn off CGI execution
-Make sure only root has read access to apache's config and binaries
+As for the apache server, always hide the Apache Version number, and other sensitive information. %TODO: paraphrase
+Make sure apache is running under its own user account and group and only root has read access to apache's config and binaries %TODO: paraphrase
+%and ensure that files outside the web roots are not served.
+%Turn off CGI execution
+%Make sure only root has read access to apache's config and binaries
 %http://www.tecmint.com/apache-security-tips/
-Disable Directory Listing
-Disable Apache’s following of Symbolic Links
+%Disable Directory Listing
+%Disable Apache’s following of Symbolic Links
 
-\subsection{language setup}
-php.ini?
-django?
+\subsection{Language setup}
+We will focus mainly on PHP, which covers more than $80\%$ \cite{PHPusuage} of the server side languages. We have done the initial
+survey of the PHP, which includes the php.ini setup and
 
 %------------------------------------------------------------------------------
 %   
