@@ -28,8 +28,26 @@
 %\lstdefinestyle{showspaces=false}
 \usepackage{courier}
 %\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
-\lstset{basicstyle=\normalfont\ttfamily,breaklines=true,showspaces=false}
+%\lstset{basicstyle=\normalfont\ttfamily,breaklines=true,showspaces=false}
 %\lstset{framextopmargin=50pt,frame=bottomline}
+\lstset{ %
+%language=python,                % choose the language of the code
+basicstyle=\footnotesize\ttfamily,       % the size of the fonts that are used for the code
+%numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
 
 %------------------------------------------------------------------------------
 %   graph
@@ -245,12 +263,12 @@ because it's the most common setup. In the final report we will do case testing 
 Configuring the environment is tedious but it is crucial. In web application, there are mainly three parts to configure
 which are the system (linux), the server (apache), and the language that you are writing your web application on.
 
-\section{System Setup}
+%\section{System Setup}
+%
+%\section{web server setup}
 
-\section{web server setup}
 
-
-\section{PHP.ini}
+\subsection{PHP.ini}
 We will focus mainly on PHP, which covers more than $80\%$ \cite{PHPusuage} of the server side languages. We have done the initial
 survey of the PHP, which includes the php.ini setup.
 PHP.ini file is an important configuration file for PHP. You declare all the configuration settings in this file. Since the php.ini file is read each time PHP is initialized, it is important that
@@ -313,25 +331,56 @@ how to escape html?
 %   
 %------------------------------------------------------------------------------
 \section{Database Access}
-Almost all the information are stored in database today,
-including users' account/password, their data, and their
-personally identifiable information (PII).
+Almost all the information are stored in databases today,
+including many sensitive data such as
+IP (Intellectual Properties),
+PII (Personally Identifiable Information),
+and users' login information as well as their private data,
+and some of them are valuable.
+%sensitive ones such as users' account/password,
+%their private data, and their PII
 Therefore,
-datacases are often the main target of attackers.
-Among all the atacks, SQL injection is the most common one.
+datacases are often the key target for hackers.
+
+%There are several common issues in the deployment of databases,
+%and some of them are cause by
+%but not all of themFor example
+To reduce potential vulnerabilities
+and minimize the damage if unfortunately the information in databases is leaked,
+We focus on three major parts which devlopor should pay attention
+at the early stage of deployment:
+database setup, data read/write, and storage of important data. %TODO: better discription?
+
+\subsection{setup}
+Setting up database correctly, as other part of the system, is a necessity.
 We focus on MySQL here because it's the LAMP \cite{LAMP} boudle is widely used.
-\\\\
-%\subsection{setup}
+
+\subsubsection{access control}
+privilage
+minimize attack surface
+\begin{lstlisting}[language=sql]
+GRANT SELECT ON *.* TO 'username'@'host_or_wildcard' IDENTIFIED BY 'password';
+\end{lstlisting}
 %account, password, access
 %information.schema?
 %access permission?
-Setting up database correctly, as other part of the system, is a necessity.
-We will discuss that later.
+%We will discuss that later.
+
+
+limited user account
+
+
+backup, but entryped
+encrypting archives to mitigate the insider-risk.
+
+%Databases also contain a networking interface, and so hackers are able to capture this type of traffic to exploit it. To avoid such a pitfall, administrators should use SSL- or TLS-encrypted communication platforms.
+
+\subsection{R/W} %TODO: better name?
+Among all the attacks, SQL injection is the most common one.
+
 Another key point is to use the specialized functions provided by databases
 instead of general ones. For example, using proposed function can effectively
 avoid some SQL injection. Below is an exmple in Python:
-\\\\
-%\subsection{R/W}
 %use proposed: avoid sql injection
 %python example:
 %cite: https://www.python.org/dev/peps/pep-0249/ Python Database API
@@ -361,14 +410,14 @@ Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 \end{lstlisting}
 
 
-%\subsection{data}
+\subsection{data}
 %django
 %https://docs.djangoproject.com/en/1.8/topics/auth/passwords/
 %http://stackoverflow.com/questions/749682/django-passwords Django Code
 
 %https://en.wikipedia.org/wiki/Rainbow_table Rainbow table
-%1. hash passward
-%2. add salt while hashing, rainbow table
+1. hash passward
+2. add salt while hashing, rainbow table
 
 
 %------------------------------------------------------------------------------
@@ -389,7 +438,7 @@ some of them can be reuse, while others must change every time.
 %some are public, some should be kept secret,
 %set up, %nonce, %some
 It's overwhelming for most of developors, and even an expertise might sometimes get it wrong.
-\\\\
+
 %key, function, implementatino, nonce.
 One of the exmples is the famous Sony PlayStation 3 issue \cite{PS3_Jailbreak}:
 Sony used ECDSA \cite{ECDSA} but didn't change the ephemeral key, so the
@@ -404,7 +453,7 @@ be crpytographically secure.
 %For the
 %lack of knowledge
 %looks fine but indeed not
-\\\\
+
 %cite http://www.nist.gov/ NIST
 %cite https://www.owasp.org/index.php/Guide_to_Cryptography OWASP guide
 %cite http://csrc.nist.gov/groups/ST/toolkit/documents/dss/NISTReCur.pdf NIST ecc recommendation
@@ -462,16 +511,19 @@ in the final report.
 %   
 %------------------------------------------------------------------------------
 \section{Useful Tools}
-Many tools such as packer or fuzzer can help developers
-further improve the quality of web application.
-We will introduce some tools after doing some experiments on them.
+%Many tools such as packer or fuzzer can help developers
+%further improve the quality of web application.
+%We will introduce some tools after doing some experiments on them.
 %use tool to help us
+\subsection{PaaS}
+Aamazon AWS?
 
-%\subsection{packer}
-%1. harden code
-%2. enhance runtime
-%\subsection{fuzzing/penetration test?}
-%1. test
+\subsection{packer}
+1. harden code
+2. enhance runtime
+
+\subsection{fuzzing/penetration test?}
+1. test
 
 %\section{TDOO}
 %1. build case to test
