@@ -78,7 +78,7 @@ Email: aznchat@tamu.edu }
 \IEEEauthorblockN{Chia-Cheng (Jeremy) Tso}
 \IEEEauthorblockA{Department of Computer Science and Engineering\\
 Texas A\&M University\\
-Email: jjjjj222@tamu.edu}}
+Email: jjjj222@tamu.edu}}
 
 \begin{document}
 %------------------------------------------------------------------------------
@@ -328,7 +328,7 @@ how to escape html?
 
 
 %------------------------------------------------------------------------------
-%   
+%   Database
 %------------------------------------------------------------------------------
 \section{Database Access}
 Almost all the information are stored in databases today,
@@ -349,38 +349,95 @@ To reduce potential vulnerabilities
 and minimize the damage if unfortunately the information in databases is leaked,
 We focus on three major parts which devlopor should pay attention
 at the early stage of deployment:
-database setup, data read/write, and storage of important data. %TODO: better discription?
+database setup, data manipulation, and storage of important data. %TODO: better discription?
 
-\subsection{setup}
-Setting up database correctly, as other part of the system, is a necessity.
-We focus on MySQL here because it's the LAMP \cite{LAMP} boudle is widely used.
+Note that we focus on MySQL here because it's one of
+the most widely used LAMP \cite{LAMP} boudle.
 
-\subsubsection{access control}
-privilage
-minimize attack surface
+\subsection{Database Setup}
+As with system and web server, setup for databaes is also very important.
+A correctly configured and updated database at the very beginning will
+avoid tons of future problem.
+Not only can it better defend attacks, but it also can rule out human errors.
+%TODO
+%Correctly
+%Setting up database correctly, as other part of the system, is a necessity.
+
+\subsubsection{Access Control}
+It's a universal concept that, to make system more secure, only provide users
+the least amount of privilege necessary to complete the job \cite{least_privilege}.
+This strategy will effectively minimize the attack surface,
+On the other hand, it will also force developor to follow the system architecture.
+For exmaple, errors will occur if a developer inadvertently write some code
+that may modify the database
+in a read only services.
+%providing only minimal resources \cite{least_privilege}
+%necessary.
+
+In database systems,
+most of the time, users only need to retrieve data.
+occasional write
+It's nearly impossible for users to modified database. (drop table?)
+Therefore, there is no need to provide all privilege
+for every users.
+
+recommendation:
+Create different users with differet privilages.
+at least 1 read only account
+
+Usage:
 \begin{lstlisting}[language=sql]
-GRANT SELECT ON *.* TO 'username'@'host_or_wildcard' IDENTIFIED BY 'password';
+mysql> SHOW GRANTS FOR '[username]'@'[hostname]';
 \end{lstlisting}
+\begin{lstlisting}[language=sql]
+mysql> GRANT [permission] ON [database].[table] TO '[username]'@'[hostname]' IDENTIFIED BY '[password]';
+\end{lstlisting}
+\begin{lstlisting}[language=sql]
+mysql> REVOKE [permission] ON [database].[table] FROM '[username]'@'[hostname]';
+\end{lstlisting}
+
+Example:
+%http://stackoverflow.com/questions/20036547/mysql-grant-read-only-options
+\begin{lstlisting}[language=sql]
+mysql> GRANT SELECT ON *.* TO 'username'@'hostname' IDENTIFIED BY 'password';
+\end{lstlisting}
+
+detail \cite{MySQL_privilage_detail}
+exmaple:
+\begin{lstlisting}[language=sql]
+mysql> GRANT SELECT, SHOW VIEW, PROCESS, REPLICATION CLIENT ON *.* TO ...
+\end{lstlisting}
+
+Also, if possible, create different databases for different purpose.
+so that if a hacker gain access to one of them, others are fine.
+details are in MySQL privilage\cite{MySQL_privilage}
 %account, password, access
 %information.schema?
 %access permission?
 %We will discuss that later.
+%limited user account
 
+%Security of the installation itself. The data files, log files, and the all the application files of your installation should be protected to ensure that they are not readable or writable by unauthorized parties.
 
-limited user account
+%TODO: temporary privilage
+%http://dba.stackexchange.com/questions/51500/set-password-with-a-limited-user
+%an unprivileged user to modify other users, which of course is not something that can normally be done -- a user that can modify other users is, pretty much by definition, not an unprivileged user -- however -- stored procedures provided a good solution in that case, because they run with the security context of their DEFINER user, allowing anybody with EXECUTE privilege on the procedure to temporarily assume escalated privileges to allow them to do the specific things the procedure accomplishes.
 
+disable local filesystem access in your SQL server if it has this feature
 
-backup, but entryped
-encrypting archives to mitigate the insider-risk.
-
-%Databases also contain a networking interface, and so hackers are able to capture this type of traffic to exploit it. To avoid such a pitfall, administrators should use SSL- or TLS-encrypted communication platforms.
-
-\subsection{R/W} %TODO: better name?
+\subsection{Data Manipulation} %TODO: better name?
 Among all the attacks, SQL injection is the most common one.
+
+string I/O to prvent it.
+
+However, correct usage of db is good, too
 
 Another key point is to use the specialized functions provided by databases
 instead of general ones. For example, using proposed function can effectively
 avoid some SQL injection. Below is an exmple in Python:
+
+recommendation:
+use proposed function
 %use proposed: avoid sql injection
 %python example:
 %cite: https://www.python.org/dev/peps/pep-0249/ Python Database API
@@ -391,6 +448,7 @@ Don't:
 \begin{lstlisting}[language=python]
 cursor.execute("SELECT * FROM table WHERE id=%s" % (id));
 \end{lstlisting}
+
 Do:
 \begin{lstlisting}[language=python]
 cursor.execute("SELECT * FROM table WHERE id=%s" , id);
@@ -410,14 +468,70 @@ Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 \end{lstlisting}
 
 
-\subsection{data}
+\subsection{Storage of Sensitive Data}
+database been intrude,
+hash
+
+
+dictionary attacks and brute-force attacks.
+harden -> increase the time they crack
+salt
+per user -> avoid precomputed table
+
+recommendataion:
+such as password,
+1. hash passward
+2. add salt while hashing, rainbow table
+    don't need to hide salt
+    long enough
 %django
 %https://docs.djangoproject.com/en/1.8/topics/auth/passwords/
 %http://stackoverflow.com/questions/749682/django-passwords Django Code
 
 %https://en.wikipedia.org/wiki/Rainbow_table Rainbow table
-1. hash passward
-2. add salt while hashing, rainbow table
+ref: https://crackstation.net/hashing-security.htm
+%never tell the user if it was the username or password they got wrong. Always display a generic message like "Invalid username or password." This prevents attackers from enumerating valid usernames without knowing their passwords.
+
+
+
+%table
+%https://crackstation.net/
+
+\subsubsection{backup}
+ref: MySQL
+http://mirror.metrocast.net/mysql/doc/mysql-security-excerpt/5.1/en/backup-and-recovery.html
+
+%but entryped
+backup
+-> crypolocker
+
+
+simple steps:
+mysqldump (logical backup)
+
+cron %how to use cron
+
+create a new user with backup privileges
+\begin{lstlisting}[language=python]
+GRANT USAGE ON *.* TO 'dump'@'%' IDENTIFIED BY ...;
+GRANT SELECT, LOCK TABLES ON `mysql`.* TO 'dump'@'%';
+GRANT SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER ON `myschema`.* TO 'dump'@'\%';
+\end{lstlisting}
+
+password problem
+%Write the script as root, put the password into root's .my.cnf (with permissions 600). You can then run mysql commands without ever having to pass the password.
+.my.cnf file in your home directory:
+
+[mysqldump]
+user="username"
+password="password"
+shell> chmod 600 .my.cnf
+%shell> mysql --defaults-file=/home/francis/mysql-opts
+
+entrpyted
+-> encrypting archives to mitigate the insider-risk.
+
+%Databases also contain a networking interface, and so hackers are able to capture this type of traffic to exploit it. To avoid such a pitfall, administrators should use SSL- or TLS-encrypted communication platforms.
 
 
 %------------------------------------------------------------------------------
