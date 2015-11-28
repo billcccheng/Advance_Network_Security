@@ -24,7 +24,7 @@
 %   paste code
 %------------------------------------------------------------------------------
 \usepackage{listings}
-%\lstset{showspaces=false}
+\lstset{showstringspaces=false}
 %\lstdefinestyle{showspaces=false}
 \usepackage{courier}
 %\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
@@ -46,6 +46,7 @@
 %------------------------------------------------------------------------------
 \usepackage{graphicx}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\graphicspath{{picture/}}
 
 %------------------------------------------------------------------------------
 %   title
@@ -150,8 +151,8 @@ if ($authorized) {
 \end{framed}
 %TODO: example
 
-Since $\$authorize$ can be initialized even without $authenticated\_user()$ and it has not been initialized to false in the beginning. Attacker
-can take advantage of this, defining $\$authorized$ through various techniques, for example, defining the variable $\$authorized$ through $register\_globals$. 
+Since \texttt{\$authorize} can be initialized even without \texttt{authenticated\_user()} and it has not been initialized to false in the beginning. Attacker
+can take advantage of this, defining \texttt{\$authorized} through various techniques, for example, defining the variable \texttt{\$authorized} through \texttt{register\_globals}. 
 Boom! Your website is compromised, all the sensitive data are exposed to the attacker!
 
 To prevent this from happening, we want to provide some simple, clear but
@@ -244,10 +245,41 @@ In the report we will mainly focus on the things stated below
 because it's the most common setup. In the final report we will do case testing for the things we have proposed.
 Configuring the environment is tedious but it is crucial. In web application, there are mainly three parts to configure
 which are the system (linux), the server (apache), and the language that you are writing your web application on.
+\section{Setup Local Host Website}
+We will demonstrate the possible attacks if the system or any file is not configured correctly with a website we have setup. This is intended to be a raw website without any defense against any attacks. The below is the screen shot of the basic website format. All screenshots example in the followings are all attacks of this localhost website
+\begin{figure}[h]
+\includegraphics[width=8cm, height=4cm]{yii}
+\centering
+\caption{Localhost website}
+\end{figure}
 
-\section{System Setup}
+\section{Apache Server Setup}
+Apache server is now the most dominant http server. We can see in \cite{ApachePopularity} that till November 28 2015, Apache still had $55.7\%$ of the market share. So we will focus on the configuration for the Apache server.
 
-\section{web server setup}
+\subsection{Options}
+If this variable was turned on, we can see the directory of the web server. This is really not a good idea to let users see your directories. You should always check before releasing the product. Attackers could gain a lot information just by looking at this. For example, looking at this directory, attackers can now know that this is a MVC model. Attackers could easily hijack the model or controller and send the user to another malicious cite.
+\begin{figure}[h]
+\includegraphics[width=4cm, height=6cm]{options_none}
+\centering
+\caption{Directory of the localhost server}
+\end{figure}
+
+\subsection{AllowOverride}
+Next, we move on to AllowOverride variable. This is an important variable because, if this is set to All, all the configuration you have configured in the APACHE file can be overridden by this file. This main purpose was used because different file needed different configuration for the APACHE server, however it strongly recommended you turn this off. If attackers gain access to this file, you apache server may be in danger too.  For the example below: when a user links to this server from google or facebook, it is automatically rendered to a new webpage which can be malicious.
+\begin{lstlisting}[ basicstyle=\small\ttfamily]
+RewriteEngine On
+RewriteCond \%{HTTP_REFERER} .*google.* [OR]
+RewriteCond \%{HTTP_REFERER} .*facebook.* [OR]
+RewriteRule ^(.*)$ htttp://malwarewebsite.com [R=301,L]
+\end{lstlisting}
+
+\subsection{ServerSignature}
+This signature shows the version of APACHE and PHP, which is not an good idea because there are known vulnerabilities for out of date APACHE version which can be exploited.
+\begin{figure}[h]
+\includegraphics[scale=0.3]{serversignature}
+\centering
+\caption{The red box is the version number of apache and php}
+\end{figure}
 
 
 \section{PHP.ini}
@@ -259,9 +291,11 @@ to prevent petty attacks. Even though this configuration won't by itself fend of
  
 \subsection{expose\_php}
 \texttt{Expose\_php}, when turned on will tell the web server to send back the \texttt{X-Powered-By} header, in other words, \texttt{Expose\_php} will return back in every request what version of PHP is installed.
+
 \subsubsection{Vulnerability}
 If a web application is using a PHP version that is out of date or using a PHP version with known vulnerabilities, malicious attackers can exploit this vulnerability causing the web application to be 
 unsecure\cite{exposephp}.
+
 \subsubsection{Recommendation}
 Setting the \texttt{Expose\_php} to \texttt{off} is recommended. Even though determined attackers can still get the version of your php but it would take them more time trying to achieve this. In addition,
  the web application can stand up to simple attack scanning for specific version of php vulnerabilities. In conclusion, it is always better to set \texttt{Expose\_php} to \texttt{off} than never.
