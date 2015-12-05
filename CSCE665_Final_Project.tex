@@ -1,6 +1,6 @@
 \documentclass[conference]{IEEEtran}
 
-\hyphenation{op-tical net-works semi-conduc-tor}
+%\hyphenation{op-tical net-works semi-conduc-tor}
 
 \usepackage{syntonly}
 %\syntaxonly
@@ -469,6 +469,7 @@ Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 
 
 \subsection{Storage of Sensitive Data}
+\subsubsection{password}
 database been intrude,
 hash
 
@@ -496,8 +497,9 @@ ref: https://crackstation.net/hashing-security.htm
 
 %table
 %https://crackstation.net/
+\subsubsection{encryption}
 
-\subsubsection{backup}
+\subsection{backup}
 ref: MySQL
 http://mirror.metrocast.net/mysql/doc/mysql-security-excerpt/5.1/en/backup-and-recovery.html
 
@@ -531,6 +533,10 @@ shell> chmod 600 .my.cnf
 entrpyted
 -> encrypting archives to mitigate the insider-risk.
 
+\begin{lstlisting}[language=python]
+openssl aes-256-cbc -in attack-plan.txt -out message.enc
+openssl aes-256-cbc -d -in message.enc -out plain-text.txt
+\end{lstlisting}
 %Databases also contain a networking interface, and so hackers are able to capture this type of traffic to exploit it. To avoid such a pitfall, administrators should use SSL- or TLS-encrypted communication platforms.
 
 
@@ -571,6 +577,7 @@ be crpytographically secure.
 %cite http://www.nist.gov/ NIST
 %cite https://www.owasp.org/index.php/Guide_to_Cryptography OWASP guide
 %cite http://csrc.nist.gov/groups/ST/toolkit/documents/dss/NISTReCur.pdf NIST ecc recommendation
+\subsection{general concept}
 To support developors, we concluded the following guildlines:
 %Three most important concepts
 \begin{enumerate}[label=\textbf{\arabic*.}]
@@ -598,6 +605,10 @@ for hash, symmetric and assymetric encropyion,
 in many common web-debelop languages
 in the final report.
 
+\subsection{asymmetric}
+\subsection{symmetric}
+\subsection{hash}
+\subsection{RNG}
 %\subsection{SHA, AES, RSA, ECC?}
 %provide some python function
 %%cite: https://docs.python.org/2/library/hashlib.html#module-hashlib Python hashlib
