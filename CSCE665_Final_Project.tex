@@ -396,68 +396,99 @@ Developers should bear in mind that not all users know about web security. So us
 %------------------------------------------------------------------------------
 \section{Database Access}
 Almost all the information are stored in databases today,
-including many sensitive data such as
-IP (Intellectual Properties),
-PII (Personally Identifiable Information),
-and users' login information as well as their private data,
-and some of them are valuable.
+and some of them are sensitive:
+corporate IP (Intellectual Properties),
+users' PII (Personally Identifiable Information),
+account/password, as well as their private data.
+%So many sensitive data
+%and some of them are valuable.
 %sensitive ones such as users' account/password,
 %their private data, and their PII
-Therefore,
+These sensitive data are valuable, and thus
+%Therefore,
 datacases are often the key target for hackers.
+Another reason why database is a popular target
+is that databases are for storing information only,
+so a pure information leak is all what hackers want.
+With attackes such as SQL injection,
+They don't even need to break into syatems to get what they want.
 
 %There are several common issues in the deployment of databases,
 %and some of them are cause by
 %but not all of themFor example
 To reduce potential vulnerabilities
 and, if unfortunately the information in databases is leaked,
-to minimize the damage,
-We focus on three major parts which devlopor should pay attention
-at the early stage of deployment:
-database setup, data manipulation, and storage of important data. %TODO: better discription?
-
-Note that we focus on MySQL here because it's one of
+to minimize damage,
+We focus on four major parts which devloper should pay attention
+while working on a web application:
+%at the early stage of deployment:
+access control, data manipulation, storage of important data,
+and backup.
+Note that we use MySQL as examples here because it's one of
 the most widely used LAMP \cite{LAMP} boudle.
 
-\subsection{Database Setup}
-As with system and web server, setup for databaes is also very important.
+\subsection{Access Control}
+As with system and web server, database setup is also an ineluctable
+step to secure web applications.
 A correctly configured and updated database at the very beginning will
-avoid tons of future problem.
-Not only can it better defend attacks, but it also can rule out human errors.
+avoid many future problems:
+not only can it better defend intrusions,
+but it also can minimize or prevent errors due to incorrect design.
 %TODO
 %Correctly
 %Setting up database correctly, as other part of the system, is a necessity.
 
-\subsubsection{Access Control}
-It's a universal concept that, to make system more secure, only provide users
-the least amount of privilege necessary to complete the job \cite{least_privilege}.
-This strategy will effectively minimize the attack surface,
-On the other hand, it will also force developor to follow the system architecture.
-For exmaple, errors will occur if a developer inadvertently write some code
+%\subsubsection{Access Control}
+The most important part for database setup is access control.
+It's a universal concept that, to make system more secure,
+system administor should provide users
+only the least amount of privilege necessary to complete the job \cite{least_privilege}.
+On one hand,
+this strategy will effectively minimize the attack surface,
+because one compromised account can't do much.
+On the other hand, it will also force developor to follow the blueprint of
+system architecture.
+For exmaple, database will block the query
+if a developer inadvertently write some code
 that may modify the database
 in a read only services.
 %providing only minimal resources \cite{least_privilege}
 %necessary.
 
 In database systems,
-most of the time, users only need to retrieve data.
-occasional write
-It's nearly impossible for users to modified database.
-Therefore, there is no need to provide all privilege
-for every users.
-Our recommendation is:
-create different users with differet privilages,
-such as root, database owner, read-write, read-only, and backup account,
-or even some accounts specific dedicated to given tables (ex: login account with
-only the privilege to access tables that store user name and password)
+most of the time, users only need to retrieve data, with
+occasional writing, and
+it's nearly impossible for users to modified the structure of database.
+Therefore,
+%there is no need to provide all privilege
+%for every users.
+our recommendation for access control is:
+%Our recommendation is:
+%create different users with differet privilages,
+create accounts with the following differet privilages:
+\begin{itemize}
+\item
+root
+\item
+database owner
+\item
+read-write
+\item
+read-only
+\item
+backup
+\end{itemize}
+What's more, there could be some
+accounts specific dedicated to given tables (ex: login account with
+the privilege to access only tables that store username and password)
 \cite{MySQL_privilage}.
 %Also, if possible, create different databases for different purpose.
 %so that if a hacker gain access to one of them, others are fine.
 %details are in MySQL privilage\cite{MySQL_privilage}
-If the development time is limited, at least separate the account that
+If the development time is truly limited, we suggest at least separate the account that
 can modify the database from those that can only access it.
 
-The following are usages to setup the privilege in MySQL:
+The following are commands to setup the privilege in MySQL:
 \begin{lstlisting}[language=sql]
 mysql> SHOW GRANTS FOR '[username]'@'[hostname]';
 
@@ -467,7 +498,7 @@ mysql> REVOKE [permission] ON [database].[table] FROM '[username]'@'[hostname]';
 \end{lstlisting}
 
 And here is an example to setup an account ``username'' with read-only privilege.
-More details are in \cite{MySQL_privilage_detail}.
+You can find more details in \cite{MySQL_privilage_detail}.
 %http://stackoverflow.com/questions/20036547/mysql-grant-read-only-options
 \begin{lstlisting}[language=sql]
 mysql> GRANT SELECT ON *.* TO 'username'@'hostname' IDENTIFIED BY 'password';
@@ -487,26 +518,33 @@ mysql> GRANT SELECT, SHOW VIEW, PROCESS, REPLICATION CLIENT ON *.* TO ...
 %http://dba.stackexchange.com/questions/51500/set-password-with-a-limited-user
 %an unprivileged user to modify other users, which of course is not something that can normally be done -- a user that can modify other users is, pretty much by definition, not an unprivileged user -- however -- stored procedures provided a good solution in that case, because they run with the security context of their DEFINER user, allowing anybody with EXECUTE privilege on the procedure to temporarily assume escalated privileges to allow them to do the specific things the procedure accomplishes.
 
-One of the additional tips is to
-disable local filesystem access in your SQL server if it has this feature.
-%It will prevent
-It can be easily misused.
+Apart from access control to the information in database itself,
+some databases have the privilege configuration for
+the external files.
+%there is also access control for database
+%One of the additional tips is to
+Our recommendation is to
+disable local filesystem access in your SQL server if it has this feature,
+because most of the time it is unnecessary, and it can be easily misused.
 
 \subsection{Data Manipulation}
 Among all the attacks, SQL injection is the most common one.
-As mentioned in the previous section,
-We need to take care of all the strings that read from users to prevent it.
+As mentioned in the previous string I/O section,
+we had better take care of all the strings that read from users.
 %string I/O to prvent it.
-Although that filtering out string or escaping special character
-from external users can reduce most of the issues, sometimes
-the problems are caused by internal errors,
+Although we can reduce most of the issues by
+filtering out or escaping special characters in the strings
+from external users, sometimes there are still
+problems caused by internal errors,
 and it's no way to block them on the border.
 
 However, a good news is that the correct usage of database can have an
-additional protections.
-The key point is to use the specialized functions provided by databases
-instead of general ones. For example, using proposed function can effectively
-avoid some SQL injection. Below is an exmple in Python:
+additional protections to the SQL injection issue.
+The key point is to use the specialized functions provided by databases,
+instead of the general ones that simply pass the content to database
+without any pre-process.
+For example, using proposed function can effectively
+avoid some SQL injection. An exmple written in Python is demonstrated below:
 
 %recommendation:
 %use proposed function
@@ -526,83 +564,117 @@ It's the correct way to access database:
 cursor.execute("SELECT * FROM table WHERE id=%s" , id);
 \end{lstlisting}
 
-These two statments are very similar, but they are
-very different in terms of internal operation inside database.
-The first one is a normal format string construction in python.
-The placeholder \%s will be replaced by id before any operations,
+These two statements look very similar, yet they are
+in fact different in terms of internal operation in database.
+The first one is a standard format string in python:
+the placeholder ``\%s'' will be replaced by the content
+of ``id'' before any operations,
 and the whole query will be executed.
-It's basically the same as feed the whole string in to the database
-directly and
+In other words, it's basically the same as directly
+feeding the whole string in to the database,
+and
 apparently there is an injection problem.
 %injection problem
 
 On the other hand,
-the second statement uses proposed function.
+the second statement uses the proposed function.
 %with paramters.
 The database will pre-compute the operation before carrying out any queries,
-and the it will apply the whole \%s directly for comparison after building
-the query plan, instead of interpret the contain in \%s as a part of the
+that is, the string \lstinline[language=python]{"SELECT * FROM table WHERE id=%s"}
+will be processed first before the substitution of ``\%s''.
+And then the databases will apply the whole ``\%s'' directly for comparison,
+instead of interpret the contain in ``\%s'' as a part of the
 query control structure.
 %pre-compute
 Therefore,
 if somebody tries to perform an SQL injection, the system will block it automatically.
-It will behave as the final guard to defend problems from both outside or inside
-the applications.
+This mechanics will behave as the final guard to defend problems
+from both outside and inside
+the application.
 \begin{lstlisting}[language=python]
 Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 \end{lstlisting}
 
 \subsection{Storage of Sensitive Data}
-If, unfortunately, your systems were intruded by hackers,
-then the last thing you can do is to make them hard to get informations.
-And here is the benefit of encryptions.
+If your systems were unfortunately intruded by hackers,
+then the last thing you can do is to make them hard to get the informations
+kept in database.
+%And here is the benefit of encryptions.
+Of course it has to be done before problems happens,
+and it can be achieved by
+encrypting important data.
 
 \subsubsection{Password}
-The most important implementation is to protect
-the usrs' passwords, and the most common practice is to hash it.
-Although hashing can't defend dictionary attacks or brute-fore attacks,
-this practice can efficiently increase the difficulty for hackers to
-get the real passwords set by users.
-Now we know the password should be hashed, but sometimes
-is needed some additional cares to do it right. The following are
-some important steps for hashing the passwords.
+One of the most important implementation is to hide
+users' passwords, and the most common practice is to hash it.
+Although hashing password will still be cracked by
+dictionary attacks or brute-fore attacks,
+it can efficiently increase the difficulty for hackers to
+get the real passwords.
 
-First of all, make sure that hashing is done on the server side,
-as close the place that store it as possible. Because
+Now we know the password should be hashed, to be sure, but sometimes
+it requires some additional cares to do it right. The following are
+some important steps for hashing passwords.
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item
+First of all, use cryptographic hash function. Not all the hash functions
+are for secure propose, so it's important to pick up the right one.
+We will discuss 
+which hash functions to use in the next section.
+
+    \item
+Make sure that hashing is done on the server side,
+as close the place that use it as possible.
+Because
 once a hash is computed, it is literally the password for the account.
-Everyone has the hash value can pass the verification process. Therefore,
-if the hashes are done outside the system, the hackers can intercept them
-and use it whenever they want.
+Everyone with the hash value can pass the verification process. Therefore,
+if the hashing is done outside the system, the hackers can just intercept the results
+and use it as the key.
 
-Secondly, make sure to add salt before hashing.
-Even though hashing can harden the the protection of password,
-hackers can still reduce the time to break it.
+    \item
+Add salt before hashing.
+Even though hashing can provide rather strong protection for passwords,
+hackers can still use many techneques to reduce the time to break it.
 They can always pre-compute a table \cite{rainbow} that map
-values before and after hashing, and then while they get a
-hash value, they can simply compare it in the pre-computed table and
-get the real value. To against this attack, the password should add some
+hash values to plaintexts of some strhing, and then
+break the hash immediately if the value is in the table.
+%while they get a
+%hash value, they can simply compare it in the pre-computed table and
+%get the real value.
+To against this attack, the password should add some
 ``salt'' \cite{salt} before hashing.
-The salt should be long enough, because the overall number of
+The salt is just some string that append to the original value to
+rearrange the plaintext to hash mapping.
+It should be long enough, because the overall number of
 possible value of salt means the overall number of tables that
 hackers will need to pre-compute if they want to break the hash.
-Any additional bit will double the table size by 2, while
-increase negligible computation time in hasing, so a
-32-bits or 64-bits salt would be a good option.
+Any additional bit will double the table size by 2, with
+negligible additional computation time in hashing, so it's
+a very good trade-off.
+Generally, a 32-bits or 64-bits salt would be a good option.
 
-Third, create different salts for different users.
-If the whole database use the same salt, then hackers
-can compute only the table for this specific salt to crack
+    \item
+Use different salts for different users.
+If the whole database uses the same salt, then hackers
+can compute only one table for this specific salt to crack
 every account, so every password should be appended with
-different salt. For a given account, the salt can be stored as plaintext
-with other account related information; it doesn't have to be hidden or obscured.
+different salt.
+You might wonder then how to hide the salt,
+but the truth is that the salt
+doesn't have to be hidden or obscured.
+Therefore, for a given account, the salt can be stored as plaintext
+with other account related information.
 
-Fourth, the salt should be randomly generated and is irrelevant to other
-information, because once the developor detect that the databases
+    \item
+The salt should be randomly generated and irrelevant to other
+information. Because once the developor detect that the databases
 are stolen, the password and the salt must be completely changed to
 prevent the attack. The better practice would be generating new salt
 everything the password is changed.
+\end{enumerate}
 
-The following is php example \cite{salt_example}
+The following is a php example \cite{salt_example}
 for generating the hash value with a password.
 %from crackstation.net \cite{salt_example}:
 \begin{lstlisting}[language=php]
@@ -654,16 +726,18 @@ Encrypting field in database is normally unnecessary,
 becuase the key have to be stored somewhere in the system as well,
 with the same privilege of database. And once the system is hacked,
 the key will be discovered easily. Plus, it will cause additional
-overhead. Therefore, spending time on other more security issues
+overhead, and make some functionality such as searching a giving pattern
+very difficult to implement.
+Therefore, spending your valuable time on other security issues
 would be more practical.
 
 However, if you really want to encrypt other sensitive information other than password,
 there are 2
-ways to do it: either encrypt it by your web application or by database itself.
+ways to do it: either encrypt it by your web application o by database itself.
 Our reccommendation is to encrypt it by your web application.
 Even though there is not mush difference in terms of security between
-these two options, encrypting data by application gives the flexibility
-to change the underlining database.
+these two options, encrypting data by application has the flexibility
+to change the underlining databases.
 %This recommendation is not security related, it
 
 \subsection{Backup}
