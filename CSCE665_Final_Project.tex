@@ -410,7 +410,8 @@ datacases are often the key target for hackers.
 %and some of them are cause by
 %but not all of themFor example
 To reduce potential vulnerabilities
-and minimize the damage if unfortunately the information in databases is leaked,
+and, if unfortunately the information in databases is leaked,
+to minimize the damage,
 We focus on three major parts which devlopor should pay attention
 at the early stage of deployment:
 database setup, data manipulation, and storage of important data. %TODO: better discription?
@@ -441,40 +442,39 @@ in a read only services.
 In database systems,
 most of the time, users only need to retrieve data.
 occasional write
-It's nearly impossible for users to modified database. (drop table?)
+It's nearly impossible for users to modified database.
 Therefore, there is no need to provide all privilege
 for every users.
+Our recommendation is:
+create different users with differet privilages,
+such as root, database owner, read-write, read-only, and backup account,
+or even some accounts specific dedicated to given tables (ex: login account with
+only the privilege to access tables that store user name and password)
+\cite{MySQL_privilage}.
+%Also, if possible, create different databases for different purpose.
+%so that if a hacker gain access to one of them, others are fine.
+%details are in MySQL privilage\cite{MySQL_privilage}
+If the development time is limited, at least separate the account that
+can modify the database from those that can only access it.
 
-recommendation:
-Create different users with differet privilages.
-at least 1 read only account
-
-Usage:
+The following are usages to setup the privilege in MySQL:
 \begin{lstlisting}[language=sql]
 mysql> SHOW GRANTS FOR '[username]'@'[hostname]';
-\end{lstlisting}
-\begin{lstlisting}[language=sql]
+
 mysql> GRANT [permission] ON [database].[table] TO '[username]'@'[hostname]' IDENTIFIED BY '[password]';
-\end{lstlisting}
-\begin{lstlisting}[language=sql]
+
 mysql> REVOKE [permission] ON [database].[table] FROM '[username]'@'[hostname]';
 \end{lstlisting}
 
-Example:
+And here is an example to setup an account ``username'' with read-only privilege.
+More details are in \cite{MySQL_privilage_detail}.
 %http://stackoverflow.com/questions/20036547/mysql-grant-read-only-options
 \begin{lstlisting}[language=sql]
 mysql> GRANT SELECT ON *.* TO 'username'@'hostname' IDENTIFIED BY 'password';
-\end{lstlisting}
 
-detail \cite{MySQL_privilage_detail}
-exmaple:
-\begin{lstlisting}[language=sql]
 mysql> GRANT SELECT, SHOW VIEW, PROCESS, REPLICATION CLIENT ON *.* TO ...
 \end{lstlisting}
 
-Also, if possible, create different databases for different purpose.
-so that if a hacker gain access to one of them, others are fine.
-details are in MySQL privilage\cite{MySQL_privilage}
 %account, password, access
 %information.schema?
 %access permission?
@@ -487,120 +487,274 @@ details are in MySQL privilage\cite{MySQL_privilage}
 %http://dba.stackexchange.com/questions/51500/set-password-with-a-limited-user
 %an unprivileged user to modify other users, which of course is not something that can normally be done -- a user that can modify other users is, pretty much by definition, not an unprivileged user -- however -- stored procedures provided a good solution in that case, because they run with the security context of their DEFINER user, allowing anybody with EXECUTE privilege on the procedure to temporarily assume escalated privileges to allow them to do the specific things the procedure accomplishes.
 
-disable local filesystem access in your SQL server if it has this feature
+One of the additional tips is to
+disable local filesystem access in your SQL server if it has this feature.
+%It will prevent
+It can be easily misused.
 
-\subsection{Data Manipulation} %TODO: better name?
+\subsection{Data Manipulation}
 Among all the attacks, SQL injection is the most common one.
+As mentioned in the previous section,
+We need to take care of all the strings that read from users to prevent it.
+%string I/O to prvent it.
+Although that filtering out string or escaping special character
+from external users can reduce most of the issues, sometimes
+the problems are caused by internal errors,
+and it's no way to block them on the border.
 
-string I/O to prvent it.
-
-However, correct usage of db is good, too
-
-Another key point is to use the specialized functions provided by databases
+However, a good news is that the correct usage of database can have an
+additional protections.
+The key point is to use the specialized functions provided by databases
 instead of general ones. For example, using proposed function can effectively
 avoid some SQL injection. Below is an exmple in Python:
 
-recommendation:
-use proposed function
+%recommendation:
+%use proposed function
 %use proposed: avoid sql injection
 %python example:
 %cite: https://www.python.org/dev/peps/pep-0249/ Python Database API
 %.execute ( operation [, parameters ])
 %Prepare and execute a database operation (query or command).
 %cur example: http://initd.org/psycopg/docs/usage.html#query-parameters
-Don't:
+It's the incorrect way to access database:
 \begin{lstlisting}[language=python]
 cursor.execute("SELECT * FROM table WHERE id=%s" % (id));
 \end{lstlisting}
 
-Do:
+It's the correct way to access database:
 \begin{lstlisting}[language=python]
 cursor.execute("SELECT * FROM table WHERE id=%s" , id);
 \end{lstlisting}
-The first one is normal format string construction in python.
-placeholder \%s will be replaced by id,
+
+These two statments are very similar, but they are
+very different in terms of internal operation inside database.
+The first one is a normal format string construction in python.
+The placeholder \%s will be replaced by id before any operations,
 and the whole query will be executed.
-Apparently, there is an injection problem.
+It's basically the same as feed the whole string in to the database
+directly and
+apparently there is an injection problem.
 %injection problem
+
 On the other hand,
-the second one use proposed function with paramters.
-It pre-computes the query and apply the whole \%s directly for comparison.
+the second statement uses proposed function.
+%with paramters.
+The database will pre-compute the operation before carrying out any queries,
+and the it will apply the whole \%s directly for comparison after building
+the query plan, instead of interpret the contain in \%s as a part of the
+query control structure.
 %pre-compute
-If somebody tries to perform an SQL injection, the system will block it automatically.
+Therefore,
+if somebody tries to perform an SQL injection, the system will block it automatically.
+It will behave as the final guard to defend problems from both outside or inside
+the applications.
 \begin{lstlisting}[language=python]
 Warning: Truncated incorrect DOUBLE value: '1 OR 1=1'
 \end{lstlisting}
 
-
 \subsection{Storage of Sensitive Data}
-\subsubsection{password}
-database been intrude,
-hash
+If, unfortunately, your systems were intruded by hackers,
+then the last thing you can do is to make them hard to get informations.
+And here is the benefit of encryptions.
 
+\subsubsection{Password}
+The most important implementation is to protect
+the usrs' passwords, and the most common practice is to hash it.
+Although hashing can't defend dictionary attacks or brute-fore attacks,
+this practice can efficiently increase the difficulty for hackers to
+get the real passwords set by users.
+Now we know the password should be hashed, but sometimes
+is needed some additional cares to do it right. The following are
+some important steps for hashing the passwords.
 
-dictionary attacks and brute-force attacks.
-harden -> increase the time they crack
-salt
-per user -> avoid precomputed table
+First of all, make sure that hashing is done on the server side,
+as close the place that store it as possible. Because
+once a hash is computed, it is literally the password for the account.
+Everyone has the hash value can pass the verification process. Therefore,
+if the hashes are done outside the system, the hackers can intercept them
+and use it whenever they want.
 
-recommendataion:
-such as password,
-1. hash passward
-2. add salt while hashing, rainbow table
-    don't need to hide salt
-    long enough
+Secondly, make sure to add salt before hashing.
+Even though hashing can harden the the protection of password,
+hackers can still reduce the time to break it.
+They can always pre-compute a table \cite{rainbow} that map
+values before and after hashing, and then while they get a
+hash value, they can simply compare it in the pre-computed table and
+get the real value. To against this attack, the password should add some
+``salt'' \cite{salt} before hashing.
+The salt should be long enough, because the overall number of
+possible value of salt means the overall number of tables that
+hackers will need to pre-compute if they want to break the hash.
+Any additional bit will double the table size by 2, while
+increase negligible computation time in hasing, so a
+32-bits or 64-bits salt would be a good option.
+
+Third, create different salts for different users.
+If the whole database use the same salt, then hackers
+can compute only the table for this specific salt to crack
+every account, so every password should be appended with
+different salt. For a given account, the salt can be stored as plaintext
+with other account related information; it doesn't have to be hidden or obscured.
+
+Fourth, the salt should be randomly generated and is irrelevant to other
+information, because once the developor detect that the databases
+are stolen, the password and the salt must be completely changed to
+prevent the attack. The better practice would be generating new salt
+everything the password is changed.
+
+The following is php example \cite{salt_example}
+for generating the hash value with a password.
+%from crackstation.net \cite{salt_example}:
+\begin{lstlisting}[language=php]
+function create_hash($password)
+{
+    // format: algorithm:iterations:salt:hash
+    $salt = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
+    return PBKDF2_HASH_ALGORITHM . ":" . PBKDF2_ITERATIONS . ":" .  $salt . ":" .
+        base64_encode(pbkdf2(
+            PBKDF2_HASH_ALGORITHM,
+            $password,
+            $salt,
+            PBKDF2_ITERATIONS,
+            PBKDF2_HASH_BYTE_SIZE,
+            true
+        ));
+}
+\end{lstlisting}
+
+%database been intrude,
+%hash
+%
+%
+%dictionary attacks and brute-force attacks.
+%harden -> increase the time they crack
+%salt
+%per user -> avoid precomputed table
+
+%recommendataion:
+%such as password,
+%1. hash passward
+%2. add salt while hashing, rainbow table
+%    don't need to hide salt
+%    long enough
 %django
 %https://docs.djangoproject.com/en/1.8/topics/auth/passwords/
 %http://stackoverflow.com/questions/749682/django-passwords Django Code
 
 %https://en.wikipedia.org/wiki/Rainbow_table Rainbow table
-ref: https://crackstation.net/hashing-security.htm
+%ref: https://crackstation.net/hashing-security.htm
 %never tell the user if it was the username or password they got wrong. Always display a generic message like "Invalid username or password." This prevents attackers from enumerating valid usernames without knowing their passwords.
 
 
 
 %table
 %https://crackstation.net/
-\subsubsection{encryption}
+\subsubsection{Encryption}
+Encrypting field in database is normally unnecessary,
+becuase the key have to be stored somewhere in the system as well,
+with the same privilege of database. And once the system is hacked,
+the key will be discovered easily. Plus, it will cause additional
+overhead. Therefore, spending time on other more security issues
+would be more practical.
 
-\subsection{backup}
-ref: MySQL
-http://mirror.metrocast.net/mysql/doc/mysql-security-excerpt/5.1/en/backup-and-recovery.html
+However, if you really want to encrypt other sensitive information other than password,
+there are 2
+ways to do it: either encrypt it by your web application or by database itself.
+Our reccommendation is to encrypt it by your web application.
+Even though there is not mush difference in terms of security between
+these two options, encrypting data by application gives the flexibility
+to change the underlining database.
+%This recommendation is not security related, it
 
-%but entryped
-backup
--> crypolocker
+\subsection{Backup}
+In a web application, backing up the databases regularly
+is crucial for avoiding any kinds of tragedies that might damage
+the data, and
+it is also important
+from the security point of view. There are 2 issues: first,
+backup can mitigate the damage caused by attacks such as CryptoLocker \cite{cryptolocker}.
+It's a notorious and vicious malware that will encrypt all important files
+when it infests a system, and ask for ransom.
+Once files being encrypted by CryptoLocker,
+there is not guarantee that you can get the key even if you pay the ransom,
+so file encrypted by CryptoLocker basically could be seen as completely deleted,
+and it would be a catastrophe if there is no backup.
 
+Second, the information stored in the backup is the same as those
+in the database, so its
+is also a potential target for attackers.
+Therefore,
+both the process for backing up and the backup file should be protected as well.
 
-simple steps:
-mysqldump (logical backup)
-
-cron %how to use cron
-
-create a new user with backup privileges
-\begin{lstlisting}[language=python]
+The following is the flow that carry out a MySQL backup:
+%ref: MySQL
+%http://mirror.metrocast.net/mysql/doc/mysql-security-excerpt/5.1/en/backup-and-recovery.html
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item
+First, create a new user dedicated for backup. It's basically a read-only
+account with some additional privilege to access system information.
+\begin{lstlisting}[language=sql]
 GRANT USAGE ON *.* TO 'dump'@'%' IDENTIFIED BY ...;
 GRANT SELECT, LOCK TABLES ON `mysql`.* TO 'dump'@'%';
 GRANT SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER ON `myschema`.* TO 'dump'@'\%';
 \end{lstlisting}
 
-password problem
+\item
+Create \lstinline{.my.cnf} in home directory to enable auto-login
+without expose the account and passward. Note that the file should be
+created by root.
 %Write the script as root, put the password into root's .my.cnf (with permissions 600). You can then run mysql commands without ever having to pass the password.
-.my.cnf file in your home directory:
 
+\begin{lstlisting}
+cat ~/.my.cnf
 [mysqldump]
 user="username"
 password="password"
 shell> chmod 600 .my.cnf
-%shell> mysql --defaults-file=/home/francis/mysql-opts
+\end{lstlisting}
+%%shell> mysql --defaults-file=/home/francis/mysql-opts
 
-entrpyted
--> encrypting archives to mitigate the insider-risk.
+\item
+Write a script as root, and put all the commands for backup in it.
+If you want to use logical backup, use \lstinline{mysqldump}.
+\begin{lstlisting}
+mysqldump --all-databases > backup.sql
+\end{lstlisting}
+%simple steps:
+%mysqldump (logical backup)
 
-\begin{lstlisting}[language=python]
-openssl aes-256-cbc -in attack-plan.txt -out message.enc
+\item
+Remember to add commands that encrypt the backup file.
+%entrpyted
+%-> encrypting archives to mitigate the insider-risk.
+%
+\begin{lstlisting}
+openssl aes-256-cbc -in plan-text.txt -out message.enc
 openssl aes-256-cbc -d -in message.enc -out plain-text.txt
 \end{lstlisting}
+
+\item
+Use crontab or other system daemon to automatically execute you backup script.
+The numbers and stars below stand for min, hour, day, month, and weekday.
+%cron %how to use cron
+\begin{lstlisting}
+crontab -e
+01 01 * * * /path/to/your_script
+\end{lstlisting}
+%minute (0-59), hour (0-23, 0 = midnight), day (1-31), month (1-12), weekday (0-6, 0 = Sunday), command
+
+\end{enumerate}
+
+
+
+
+%but entryped
+%backup
+%-> crypolocker
+
+
+
+
 %Databases also contain a networking interface, and so hackers are able to capture this type of traffic to exploit it. To avoid such a pitfall, administrators should use SSL- or TLS-encrypted communication platforms.
 
 
@@ -641,38 +795,90 @@ be crpytographically secure.
 %cite http://www.nist.gov/ NIST
 %cite https://www.owasp.org/index.php/Guide_to_Cryptography OWASP guide
 %cite http://csrc.nist.gov/groups/ST/toolkit/documents/dss/NISTReCur.pdf NIST ecc recommendation
-\subsection{general concept}
-To support developors, we concluded the following guildlines:
+%\subsection{general concept}
+%To support developors, we concluded the following guildlines:
+Our recommendations for applying cryptographic functions are as follows:
 %Three most important concepts
 \begin{enumerate}[label=\textbf{\arabic*.}]
     \item
-Always encrypt the communication. You never know what information would help hackers
-break into your syatem, even if they appear to be harmless.
+Always encrypt your communication. You never know what information would help hackers
+break into your syatem, even if they appear to be harmless. Like the side-channel
+attack mentioned above, every small difference of data could be a hint of
+how your system works and what's in it, and it finally leads to
+true vulnerability. Therefore, since the modern computer, even cellphone,
+is faster enough to perform symmatric encryption, just take adventage of it.
+
     \item
-Use well-known standard, don't invent the encrpytion algorithm.
+Use well-known standards, don't invent the encrpytion algorithm yourself.
+The seemly unbreakable Enigma \cite{enigma} in World War II was still cracked by
+the technology at that moment; not to mention plenty of techniques,
+such as differential cryptanalysis \cite{diff_crypto},
+have invented since then. Without thorough analysis, nobody knows
+whether a encryption scheme or algorithm
+have any defect in it. Even if the detail of the algorithm might
+keep as a secret to defend attacks for a given time,
+eventually it will be known by attacker.
+Modern encryption algorithms, such as AES, 3DES, have been well-studied and proven to be
+very secure, and most of them have standard documents and convenient libraries,
+so there is no reason to invent a new one.
+
 %TODO: NIST \cite{NIST}
 %TODO: NXP mifare \cite{mifare_break}
     \item
 %use the good one
-Use the up-to-date standard.
+Use the up-to-date standard. Even though most of the common algorithms look
+fine, and are still widely adopted.
 Some algorithms such as md5 have been proved to be unsafe \cite{md5_break}.
+Old system might have some compability issues to use the new standard;
+however, if you are developing a new web application, there is no reason
+not to use the latest one.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ l | l | l}
+            Type  & recommendation & out-of-date\\\hline
+            Symmatric  & AES-128 & 3-DES\\
+            Assymatric & RSA-2048 & RSA-1024\\
+            Hash       & SHA-256 & md5\\
+            Signature & ECDSA-256 & RSA-1024\\
+            Stream  & AES-CTR-128 & RC4
+    \end{tabular}
+    \caption{Cryptographic algorithms to use}
+\end{table}
+
+
     \item
 Use libraries, don't implement algorithm yourself.
-(even  RNG)
+Again, even if an algorithm is proven to be secure, an
+invalid implementation might still undermine it.
+Some simple functions
+are totally different if it's implemented to in the sense of security.
+For eaxmple, a normal string compare function will
+compare 2 strings from the first character:
+if it encounter any different charater, it will return the
+result that these 2 strings are different.
+But when it comes to security, this algorithm is highly unsecure.
+because the attacker can use the differece of computation time
+to get the information about how many characters are the same
+at the beginning of the 2 strings, which will lead to the break
+of the whole system.
+%(even  RNG)
+
     \item
-Use it right,
-follow guides carefully for setup (such as those published by NIST \cite{NIST}).
+Use it right. Most of the algorithms are complicated, so make sure to
+follow guides carefully for setup. 
+Documents such as those published by NIST \cite{NIST} is a very good source.
 \end{enumerate}
 
-We will provide a more completet list of recommended functions,
-for hash, symmetric and assymetric encropyion,
-in many common web-debelop languages
-in the final report.
+%We will provide a more completet list of recommended functions,
+%for hash, symmetric and assymetric encropyion,
+%in many common web-debelop languages
+%in the final report.
 
-\subsection{asymmetric}
-\subsection{symmetric}
-\subsection{hash}
-\subsection{RNG}
+%\subsection{asymmetric}
+%\subsection{symmetric}
+%\subsection{hash}
+%\subsection{RNG}
 %\subsection{SHA, AES, RSA, ECC?}
 %provide some python function
 %%cite: https://docs.python.org/2/library/hashlib.html#module-hashlib Python hashlib
@@ -700,19 +906,40 @@ in the final report.
 %   
 %------------------------------------------------------------------------------
 \section{Useful Tools}
+It's undoubtedly that we need plenty of tool to help us
+develop our web application. Aside from editor, debugger,
+linter, etc. Some tools can help us enhance the secuirty of our application.
 %Many tools such as packer or fuzzer can help developers
 %further improve the quality of web application.
 %We will introduce some tools after doing some experiments on them.
 %use tool to help us
-\subsection{PaaS}
-Aamazon AWS?
+%\subsection{PaaS}
+%Aamazon AWS?
 
-\subsection{packer}
-1. harden code
-2. enhance runtime
+\subsection{Packer (Minifier)}
+Packer or minifier can rearrange your code without change its
+functionality.
+For script language, especially Javascript, it is a very useful tool.
+Using packer before releasing your code have 2 fold advantages:
+First of all, it can remove all the comments, white space, newline, etc.,
+as well as
+shorten function and
+variable names.
+Since script language is executed by interpreter on-the-fly, this reduction
+will speed up the execution.
+Second, it can obfuscate code and make it hard to be reverse engineered.
 
-\subsection{fuzzing/penetration test?}
-1. test
+%1. harden code
+%2. enhance runtime
+
+\subsection{Fuzzer and Scanner}
+Everybody will make mistakes, and it is good to have other's check for you.
+For web applications, run some fuzzer or scanner to hit potential problems
+is a good option.
+They can rule out some stupid bugs, which are highly possible
+to be discovered as well by attackers by running similar tools.
+%penetration test.
+%1. test
 
 %\section{TDOO}
 %1. build case to test
