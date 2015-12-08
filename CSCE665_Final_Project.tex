@@ -5,6 +5,7 @@
 \usepackage{syntonly}
 %\syntaxonly
 \usepackage{amsmath}
+\usepackage{ amssymb }
 \usepackage{url}
 \usepackage{cite}
 
@@ -14,6 +15,9 @@
 \usepackage{enumitem}
 \usepackage{fancyvrb}
 \usepackage{framed}
+\usepackage{lipsum}
+\usepackage{makecell}
+\usepackage{tabu}
 %------------------------------------------------------------------------------
 %   algorithm
 %------------------------------------------------------------------------------
@@ -301,7 +305,7 @@ This signature shows the version of APACHE and PHP, which is not an good idea be
 \end{figure}
 
 
-\subsection{PHP.ini}
+\section{PHP.ini}
 We will focus mainly on PHP, which covers more than $80\%$ \cite{PHPusuage} of the server side languages. We have done the initial
 survey of the PHP, which includes the php.ini setup.
 PHP.ini file is an important configuration file for PHP. You declare all the configuration settings in this file. Since the php.ini file is read each time PHP is initialized, it is important that
@@ -390,6 +394,38 @@ Despite it not being able to prevent all XSS, encoding is still the correct appr
 
 \subsection{Conclusion}
 Developers should bear in mind that not all users know about web security. So users may use the same password over multiple websites and not all website have the same security levels. If your web application becomes breached and username and passwords are stolen. Then the users are in immediate danger that all their other accounts may be hacked. Due to this, it is always a necessity to put most of your effort on the the string inputs and outputs.
+\begin{table*}
+  \centering
+  \begin{tabular}{{!{\vrule width 2pt}l!{\vrule width 2pt}c|c|c|c|c|c|c!{\vrule width 2pt}}}
+    \Xhline{4\arrayrulewidth}
+     & Version-Based Attacks & Directory Attacks & DDOS & Flow of Program  & SQL-Injection  & Redirect Attacks & XSS\\
+    \Xhline{4\arrayrulewidth}
+    \textbf{Apache}: Options &  &  $\checkmark$&  &  &  & $\checkmark$ &\\
+    \hline
+    AllowOverride & & &  & $\checkmark$  & & $\checkmark$ & \\
+    \hline
+    ServerSignature & $\checkmark$  &  &  &  &  & &\\
+      \Xhline{3\arrayrulewidth}
+    \textbf{PHP.ini}: expose\_php & $\checkmark$  &  &  &  &  &$\checkmark$ &\\
+    \hline
+    post\_max\_size &  &  & $\checkmark$   &  &  & &\\
+    \hline
+    display\_errors &  &  &  & $\checkmark$  &  & &\\
+     \Xhline{3\arrayrulewidth}
+    Server Side Validation &  & $\checkmark$  &  &  & $\checkmark$  &$\checkmark$ &\\
+    \hline
+    Client Side Validation &  &$\checkmark$   &  &  & $\checkmark$  &$\checkmark$ &\\
+    \hline
+    White List &  &  &  & $\checkmark$  &  & &\\
+    \hline
+    Escape &  &  &  &$\checkmark$  & $\checkmark$  & & $\checkmark$\\
+    \hline
+    HTML-Encoding &  &  &  &  &$\checkmark$  & &$\checkmark$\\
+    \Xhline{4\arrayrulewidth}
+
+  \end{tabular}
+  \caption{An Overview of the Attacks that can be prevented by the Guidelines}
+\end{table*}
 
 %------------------------------------------------------------------------------
 %   Database
